@@ -120,9 +120,3 @@ print(nist_controls.controls['AC-1'].get_control_markdown())
 baseline = Baseline(controls={'AC-1': {}, 'AC-2': {}}, name="Minimal Baseline", revision=5)
 nist_controls.load_baseline(baseline)
 ```
-
-## License
-
-MIT License. See `LICENSE` file for details.
-
----
