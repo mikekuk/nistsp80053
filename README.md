@@ -1,4 +1,3 @@
-
 # NIST SP800-53 Control Library
 
 This library provides a structured representation of the NIST Special Publication 800-53 controls. It enables parsing, manipulation, and formatted output of controls as defined in SP800-53 Revision 4 and Revision 5 XML files. The library is designed to help organizations handle, customize, and export NIST controls and their associated metadata in both plain text and Markdown formats.
@@ -11,17 +10,13 @@ The library is organized into classes that parse and manage NIST control data, b
 
 - Parse XML representations of NIST SP800-53 control sets.
 - Define custom baselines by selecting specific controls.
+- Apply user-defined variable options to customize control fields.
 - Format controls as plain text or Markdown.
-- Set organization-specific options for control customization.
 
 ## Requirements
 
 - Python 3.7+
 - XML files for SP800-53 Revision 4 or Revision 5 controls (`etc/800-53-rev4-controls.xml` and `etc/SP_800-53_v5_1_XML.xml`)
-
-## Installation
-
-To use this library, clone this repository and ensure the required XML files are placed in the correct directory (`etc/`).
 
 ## Usage
 
@@ -58,6 +53,31 @@ text_output = control_set_r4.controls['AC-1'].get_control_text()
 
 # Get control markdown
 markdown_output = control_set_r4.controls['AC-1'].get_control_markdown()
+```
+
+### Control Enhancements
+
+Control enhancements provide additional requirements that augment the main control. Each enhancement is parsed and stored in a dictionary within the control object, accessible through the `control_enhancements` attribute. Enhancements can be further customized, formatted, and applied to the main control as part of the baseline.
+
+```python
+# Access control enhancements for a specific control
+enhancements = control_set_r4.controls['AC-1'].control_enhancements
+print(enhancements)
+```
+
+### User-Defined Variables (Options)
+
+Some controls include user-defined variables that can be set to tailor the control to organizational needs. These variables, referred to as "options" in the code, allow users to specify values that reflect the control’s application within the organization. Options are set and accessed using the `set_option` method in the control class. 
+
+To view available options, use the `control.options` attribute:
+
+```python
+# View available options for a control
+control = control_set_r4.controls['AC-1']
+print(control.options)
+
+# Set a user-defined variable for a control
+control.set_option('option_id', 'Custom Value')
 ```
 
 ### Working with Baselines
