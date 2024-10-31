@@ -1,6 +1,6 @@
 import json
 import csv
-from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions
+from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_dict, refactor_multiple_entries
 
 
 class Control:
@@ -13,6 +13,7 @@ class Baseline:
         self.controls = controls if controls is not None else []
         self.name = name
         self.revision = revision
+        self.options = {}
         
     def __str__(self) -> str:
         return f"NIST SP800-53_r{self.revision} {self.name} Baseline Object"
@@ -87,7 +88,7 @@ class Nist_sp_800_53_control(Control):
         elif self._control_enhancements and record_type == dict and len(self._control_enhancements) > 0:
             self._control_enhancements['control-enhancement']['number'] = (Nist_sp_800_53_control(self._control_enhancements))
         # Add options dict and replace sections with format string UIDs
-        self.options = add_options(self._statement)
+        self.options = add_options(self._statement, self.number)
         
     def set_option(self, option: str, value: str) -> None:
         """Set an option for organisation assignment ot section.
@@ -97,7 +98,25 @@ class Nist_sp_800_53_control(Control):
             value (str): value to write to option
         """
         self.options[option]['new_text'] = value
-            
+    
+    def get_outstanding_options(self, add_context: bool = False) -> list[dict]:
+        """Returns a list of options that have no new text value assigned.
+        
+        Args:
+            provide_additional_context (bool): Adds the full text of the control as an additional field if True.
+
+        Returns:
+            list[dict]: List of dict options.
+        """
+        refactored_options = refactor_multiple_entries(self.options)
+        outstanding_options = [x for x in refactored_options if not x['new_text']]
+        
+        if add_context:
+            for item in outstanding_options:
+                item['Context'] = self.get_control_text()
+        
+        return outstanding_options
+
         
     def __str__(self):
         return (
@@ -161,6 +180,27 @@ class Nist_sp800_53(Library):
             control_body.control_enhancements = {key: control_body.control_enhancements[key] for key in control_body.control_enhancements if key in baseline.controls[control_id]['Control Enhancement']}
         self._baseline_object = baseline
         self.baseline = baseline.name
+    
+    def get_outstanding_options(self, add_context: bool = False) -> list[dict]:
+        """Gets a list of all options where the default values have not been changed.
+
+        Args:
+            add_context (bool, optional): Adds a the complete control text as an additional field. Defaults to False.
+
+        Returns:
+            list[dict]: A list of the outstanding tasks as dicts with. Example of dict format:
+                {'id': 'AC-2c_Option1',
+                'description': 'Require [Assignment: organization-defined prerequisites and criteria] for group and role membership;',
+                'number': 'AC-2c.',
+                'original_text': '[Assignment: organization-defined prerequisites and criteria]',
+                'new_text': None,
+                'control_id': 'AC-2'}
+        """
+        outstanding_options = []
+        for control_id in self.controls.keys():
+            outstanding_options += self.controls[control_id].get_outstanding_options(add_context)
+        return outstanding_options
+
         
     
 

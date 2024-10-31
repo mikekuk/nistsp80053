@@ -74,7 +74,7 @@ def parse_xml(file_path:str) -> dict:
     
     return parsed_dict
 
-def add_options(statements: dict) -> dict:
+def add_options(statements: dict, id: str = "") -> dict:
     # Initialize options_dict to collect all unique IDs and their matches
     options_dict = {}
     
@@ -82,7 +82,7 @@ def add_options(statements: dict) -> dict:
     if isinstance(statements, list):
         for statement in statements:
             # Extract the statement number and statement content
-            statement_number = statement.get("number", "").strip()
+            statement_number = statement.get("number", id).strip()
             statement_content = statement.get("description", "")
 
             # Extract all text within square brackets in the current statement's description
@@ -96,8 +96,9 @@ def add_options(statements: dict) -> dict:
                 options_dict[unique_id] = {
                     "description": statement_content,  # Store the full description
                     "number": statement_number,
-                    "original_text": match,
-                    "new_text": None
+                    "original_text": '[' + match + ']',
+                    "new_text": None,
+                    "control_id": id,
                 }
                 # Replace the match in the description with curly brackets
                 statement["description"] = statement["description"].replace(f'[{match}]', f'{{{unique_id}}}')
@@ -107,13 +108,13 @@ def add_options(statements: dict) -> dict:
 
             # If there are nested statements, call the function recursively
             if "statement" in statement:
-                nested_options_dict = add_options(statement["statement"])
+                nested_options_dict = add_options(statement["statement"], id)
                 options_dict.update(nested_options_dict)
 
     # If statements is a single statement dictionary (not a list)
     elif isinstance(statements, dict):
         # Extract the statement number and statement content
-        statement_number = statements.get("number", "").strip()
+        statement_number = statements.get("number", id).strip()
         statement_content = statements.get("description", "")
         
         # Extract all text within square brackets in the current statement's description
@@ -127,8 +128,9 @@ def add_options(statements: dict) -> dict:
             options_dict[unique_id] = {
                 "description": statement_content,  # Store the full description
                 "number": statement_number,
-                "original_text": match,
-                "new_text": None
+                "original_text": '[' + match + ']',
+                "new_text": None,
+                "control_id": id
             }
             # Replace the match in the description with curly brackets
             statements["description"] = statements["description"].replace(f'[{match}]', f'{{{unique_id}}}')
@@ -138,7 +140,7 @@ def add_options(statements: dict) -> dict:
 
         # If there are nested statements, call the function recursively
         if "statement" in statements:
-            nested_options_dict = add_options(statements["statement"])
+            nested_options_dict = add_options(statements["statement"], id)
             options_dict.update(nested_options_dict)
 
     return options_dict  # Return the options_dict when processing is complete
@@ -256,3 +258,20 @@ def extract_and_format_descriptions(data, format_values):
 
     return data  # If data is neither dict nor list, return it unchanged
 
+def refactor_dict(input_dict: dict) -> dict:
+    # Extract the top-level key and the nested dictionary
+    if len(input_dict) != 1:
+        raise ValueError("Input dictionary should have exactly one top-level key.")
+    
+    # Get the single key and value pair from the dictionary
+    title, content = next(iter(input_dict.items()))
+    
+    # Combine the title with the contents of the nested dictionary
+    refactored = {'id': title, **content}
+    return refactored
+
+def refactor_multiple_entries(input_dict):
+    # Refactor each entry in the input dictionary
+    return [
+        {'id': title, **content} for title, content in input_dict.items()
+    ]
