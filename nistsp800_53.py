@@ -139,7 +139,7 @@ class Nist_sp800_53(Library):
             raise BaseException(f"Incompatible revisions. Library is r{self.revision} and baseline is r{baseline.revision}")
         self.controls = {key: self.controls[key] for key in self.controls if key in baseline.controls}
         for control_id, control_body in self.controls.items():
-            control_body.control_enhancements = {key: control_body.control_enhancements[key] for key in control_body.control_enhancements if key in baseline.controls[control_id]}
+            control_body.control_enhancements = {key: control_body.control_enhancements[key] for key in control_body.control_enhancements if key in baseline.controls[control_id]['Control Enhancement']}
         self._baseline_object = baseline
         self.baseline = baseline.name
         

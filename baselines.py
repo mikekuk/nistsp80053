@@ -20,14 +20,14 @@ def extract_baselines(library: Library) -> tuple[list[str], list[str], list[str]
         if library.controls[control_idx].baseline_impact:
             try:
                 for baseline_value in library.controls[control_idx].baseline_impact:
-                    baseline_mapping_dict[baseline_value][control_idx] = []
+                    baseline_mapping_dict[baseline_value][control_idx] = {'Control Enhancement':[]}
             except KeyError:
                 pass
         for control_enhancement_idx in library.controls[control_idx].control_enhancements.keys():
             if library.controls[control_idx].control_enhancements[control_enhancement_idx].baseline_impact:
                 try:
                     for baseline_value in library.controls[control_idx].control_enhancements[control_enhancement_idx].baseline_impact:
-                        baseline_mapping_dict[baseline_value][control_idx].append(control_enhancement_idx)
+                        baseline_mapping_dict[baseline_value][control_idx]['Control Enhancement'].append(control_enhancement_idx)
                 except KeyError:
                     pass
     
