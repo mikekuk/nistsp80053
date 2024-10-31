@@ -25,7 +25,7 @@ The library is organized into classes that parse and manage NIST control data, b
 The library supports both Revision 4 and Revision 5 control sets. Initialize by creating an instance of `Nist_sp_800_53_r4` or `Nist_sp_800_53_r5`, depending on the desired revision.
 
 ```python
-from your_module import Nist_sp_800_53_r4, Nist_sp_800_53_r5
+import Nist_sp_800_53_r4, Nist_sp_800_53_r5
 
 # For Revision 4 controls
 control_set_r4 = Nist_sp_800_53_r4()
