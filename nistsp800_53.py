@@ -1,4 +1,7 @@
+import json
+import csv
 from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions
+
 
 class Control:
     def __init__(self) -> None:
@@ -15,6 +18,22 @@ class Baseline:
         return f"NIST SP800-53_r{self.revision} {self.name} Baseline Object"
     
     __repr__ = __str__
+    
+    def load_json(self, file_path: str) -> None:
+        """Loads controls from json. Json should be formatted as:
+        {
+            'AC-2': {
+                'Control Enhancement: ['AC-1 (2)' 'AC-2 (3)']
+                },
+            AC-3: {'Control Enhancement': []}
+        }
+
+        Args:
+            file_path (str): path to json file
+        """
+        with open(file_path, 'r') as file:
+            baseline_dict = json.load(file)
+        self.controls = baseline_dict
 
 
 class Library:
@@ -66,7 +85,7 @@ class Nist_sp_800_53_control(Control):
                         raise BaseException(f"{self.number}\n\n{control}\n\n{self._control_enhancements}")
         # Needed to handel cases where the control enchantment is only a single item, when it is a dict not list
         elif self._control_enhancements and record_type == dict and len(self._control_enhancements) > 0:
-            self.control_enhancements['number'] = (Nist_sp_800_53_control(self._control_enhancements))
+            self._control_enhancements['control-enhancement']['number'] = (Nist_sp_800_53_control(self._control_enhancements))
         # Add options dict and replace sections with format string UIDs
         self.options = add_options(self._statement)
         
@@ -152,6 +171,42 @@ class Nist_sp_800_53_r4(Nist_sp800_53):
 
 class Nist_sp_800_53_r5(Nist_sp800_53):
     def __init__(self) -> None:
-         super().__init__(xml_path='etc/SP_800-53_v5_1_XML.xml')
-         self.revision = 5
+        super().__init__(xml_path='etc/SP_800-53_v5_1_XML.xml')
+        self.revision = 5
+        
+        # Initialize an empty list to hold each row as a dictionary
+        csv_data = []
+
+        # Open and read the CSV file
+        with open('etc/sp800-53b-control-baselines.csv', mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            
+            # Iterate over each row and add it to the list
+            for row in csv_reader:
+                csv_data.append(dict(row))  # Convert OrderedDict to regular dict (optional)
+
+         
+        #  Below code needed to fix issue where r5 XML files does not contain baselines for control enhancements.
+        r5_baselines = {
+        row['Control Identifier']: {
+            'baselines': [
+                level for level, key in {
+                    'LOW': 'Security Control Baseline - Low',
+                    'MODERATE': 'Security Control Baseline - Moderate',
+                    'HIGH': 'Security Control Baseline - High',
+                    'PRIVACY': 'Privacy Baseline'
+                }.items() if row.get(key, '').strip()  # Include baseline if non-empty
+            ]
+        }
+        for row in csv_data
+        }
+        # Added to correct space format
+        # r5_baselines_format = {x.replace('(', ' ('): y for x, y in r5_baselines.items()}
+        for control_id in self.controls.keys():
+            for enhancement_id in self.controls[control_id].control_enhancements.keys():
+                try:
+                    self.controls[control_id].control_enhancements[enhancement_id].baseline_impact = r5_baselines[enhancement_id]['baselines']
+                except:
+                    raise BaseException(f"{control_id} {enhancement_id}")
+
 

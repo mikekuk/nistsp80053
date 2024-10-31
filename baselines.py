@@ -55,3 +55,6 @@ baseline_nist_sp_800_53_r5_privacy = Baseline(controls=privacy, name='Privacy', 
 baseline_nist_sp_800_53_r5_low = Baseline(controls=low,  name='Low', revision=5)
 baseline_nist_sp_800_53_r5_moderate = Baseline(controls=moderate,  name='Moderate', revision=5)
 baseline_nist_sp_800_53_r5_high = Baseline(controls=high,  name='High', revision=5)
+
+baseline_jsig = Baseline(name='JSIG', revision=4)
+baseline_jsig.load_json('etc/jsig_controls.json')
