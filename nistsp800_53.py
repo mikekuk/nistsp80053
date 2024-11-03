@@ -53,7 +53,9 @@ class Nist_sp_800_53_control(Control):
             'statement': None,
             'supplemental-guidance': None,
             'control-enhancements': [],
-            'related': None
+            'related': None,
+            'discussion': None,
+            'references': None,
         }
         for key in fields.keys():
             if key not in control_dict:
@@ -74,6 +76,10 @@ class Nist_sp_800_53_control(Control):
         self.supplemental_guidance = fields['supplemental-guidance']
         self._control_enhancements = fields['control-enhancements']
         self.related = fields['related']
+        self._discussion_raw = fields['discussion']
+        if self._discussion_raw:
+            self.discussion = self._discussion_raw[0]['description']['p']
+        self.references = fields['references']
         self.control_enhancements = {}
         if self._control_enhancements:
             record_type = type(self._control_enhancements['control-enhancement'])
@@ -154,7 +160,7 @@ class Nist_sp_800_53_control(Control):
 class Nist_sp800_53(Library):          
     def __init__(self, xml_path:str) -> None:
         self._xml_path = xml_path
-        self._raw_controls = parse_xml(self._xml_path)['control']
+        self._raw_controls = parse_xml(self._xml_path)['controls:controls']['controls:control']
         self.controls = {}
         self.revision = 0
         self._baseline_object = None
