@@ -1,6 +1,6 @@
 import json
 import csv
-from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_dict, refactor_multiple_entries
+from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_multiple_entries, generate_sections, replace_placeholder
 
 
 class Control:
@@ -77,6 +77,7 @@ class Nist_sp_800_53_control(Control):
         self._control_enhancements = fields['control-enhancements']
         self.related = fields['related']
         self._discussion_raw = fields['discussion']
+        self.discussion = None
         if self._discussion_raw:
             self.discussion = self._discussion_raw[0]['description']['p']
         self.references = fields['references']
@@ -155,7 +156,98 @@ class Nist_sp_800_53_control(Control):
         """
         completed_statement = extract_and_format_descriptions(self._statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
         return format_statement_to_markdown(completed_statement)
+
+    def get_control_html(self, stylesheet_path:str = "") -> str:
+        """
+        Generates an HTML page for a specific control, formatted with a title, description, and other sections,
+        optionally including a linked stylesheet.
+
+        Parameters:
+        - control (object): An object containing details about the control, including identifier, name, and sections
+                            such as control statements, discussion, related sections, enhancements, and baselines.
+                            Each section is formatted with specific options and placeholders.
+        - stylesheet_path (str): A string path to an optional CSS stylesheet for styling the HTML page.
+                                Defaults to an empty string, which omits the stylesheet link in the HTML.
+
+        Returns:
+        - str: A string containing the fully formatted HTML page as a template, filled with content from the
+            control object. If a stylesheet path is provided, includes a `<link>` tag in the `<head>` section
+            for CSS styling.
+
+        Functionality:
+        - If `stylesheet_path` is provided, the function includes it in the HTML `<head>` section as a link to
+        external CSS.
+        - Extracts `options` from the `control` object, replacing placeholders in control text with the appropriate
+        values.
+        - Retrieves control data sections (e.g., statements, discussion, related items, enhancements) from the
+        `generate_sections` function.
+        - Uses `replace_placeholder` to substitute any placeholder values within the control text.
+        - Constructs the final HTML document with a structured layout including a title, main heading, and various
+        sections specific to the control.
+
+        Example Usage:
+        ```
+        html_output = get_control_html(au_4, "styles.css")
+        print(html_output)
+        ```
+
+        The function is ideal for dynamically generating HTML representations of control documents, useful for 
+        applications needing a web-based presentation of control data.
+
+        """
         
+        if stylesheet_path == "":
+            style_section =  ""
+        else:
+            style_section = f'<link rel="stylesheet" href="{stylesheet_path}">'
+
+        options = {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()}
+
+        control_data = generate_sections(self)
+
+        control_statements_html = replace_placeholder(control_data['statement_html'], options)
+
+        # Example HTML template with placeholders
+        template = """<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>{control_identifier} - {control_name}</title>
+            {style_section}
+        </head>
+        <body>
+            <h1>{control_identifier}: {control_name}</h1> 
+            <div class="section" id="description">
+                <h2>Control Description</h2>
+                {control_statements_html}
+            </div>
+            {discussion_section}
+            
+            {related_section}
+            
+            {enhancements_section}
+            
+            {baselines_section}
+        </body>
+        </html>
+        """
+
+        # Populate the template
+        html_output = template.format(
+            style_section=style_section,
+            control_identifier=control_data['control_identifier'],
+            control_name=control_data['name'],
+            control_statements_html=control_statements_html,
+            discussion_section = control_data['discussion_section'],
+            related_section = control_data['related_section'],
+            enhancements_section=control_data['enhancements_section'],
+            # supplemental_guidance_section=control_data['supplemental_guidance_section'],
+            # references_section=control_data['references_section'],
+            baselines_section=control_data['baselines_section']
+        )
+        
+        return html_output        
+
 
 class Nist_sp800_53(Library):          
     def __init__(self, xml_path:str) -> None:

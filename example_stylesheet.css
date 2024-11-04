@@ -1,0 +1,59 @@
+/* styles.css */
+
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* Header styling */
+h1 {
+    font-size: 24px;
+    color: #2c3e50;
+    text-align: center;
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 20px;
+    color: #34495e;
+    margin-top: 20px;
+}
+
+/* Section styling */
+.section {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Links and text formatting */
+a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+/* Baseline section styling */
+#baselines_section {
+    background-color: #ecf0f1;
+    padding: 10px;
+    border-left: 4px solid #bdc3c7;
+}
+
+/* Enhancements section styling */
+#enhancements_section {
+    background-color: #dff0d8;
+    padding: 10px;
+    border-left: 4px solid #27ae60;
+}
