@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import xmltodict
 import re
+import os
 
 # Define a function to parse the XML to a dictionary recursively
 def parse_element(element):
@@ -462,7 +463,7 @@ def generate_sections(control):
         enhancements_html_list = []
         for key in control.control_enhancements.keys():
             enhancement = control.control_enhancements.get(key)
-            enhancement_options = {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in enhancement.options.items()}
+            enhancement_options = {key: f'<span class="option" id="{key}"> {value["new_text"]}</span>' if value['new_text'] else f'<span class="option" id="{key}"> {value["original_text"]}</span>' for key, value in enhancement.options.items()}
             discussion_html = ""
             if enhancement.discussion:
                 discussion_html = f"<h3>Discussion</h3><p>{enhancement.discussion}"

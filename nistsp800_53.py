@@ -341,7 +341,7 @@ class Nist_sp800_53(Library):
             stylesheet_dest_path = os.path.join(output_path, stylesheet_file_name)
             # Copy the file to the destination directory
             shutil.copy(stylesheet_path, stylesheet_dest_path)
-            new_style_sheet_path = f"./{stylesheet_file_name}"
+            new_style_sheet_path = stylesheet_file_name
         else:
             new_style_sheet_path = ""
 
