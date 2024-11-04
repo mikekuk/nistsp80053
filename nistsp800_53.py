@@ -333,15 +333,18 @@ class Nist_sp800_53(Library):
         if not os.path.exists(output_path):
             os.makedirs(output_path)
             
-        # Copy css file to output dir
-        # Extract the file name from the source file path
-        stylesheet_file_name = os.path.basename(stylesheet_path)
-        # Create the full destination path
-        stylesheet_dest_path = os.path.join(output_path, stylesheet_file_name)
-        # Copy the file to the destination directory
-        shutil.copy(stylesheet_path, stylesheet_dest_path)
-        
-        # TODO: Build index page.
+        if stylesheet_path != "":
+            # Copy css file to output dir
+            # Extract the file name from the source file path
+            stylesheet_file_name = os.path.basename(stylesheet_path)
+            # Create the full destination path
+            stylesheet_dest_path = os.path.join(output_path, stylesheet_file_name)
+            # Copy the file to the destination directory
+            shutil.copy(stylesheet_path, stylesheet_dest_path)
+            new_style_sheet_path = f"./{stylesheet_file_name}"
+        else:
+            new_style_sheet_path = ""
+
         
         #  Generate control documents
         controls_key_list = self.controls.keys()
@@ -350,13 +353,13 @@ class Nist_sp800_53(Library):
             file_name = f"{key}.html"
             file_path = os.path.join(output_path, file_name)
             with open(file_path, "w", encoding="utf-8") as file:
-                file.write(self.controls.get(key).get_control_html(stylesheet_path = f"./{stylesheet_file_name}"))
+                file.write(self.controls.get(key).get_control_html(stylesheet_path = new_style_sheet_path))
                 
 
         file_name = "index.html"
         file_path = os.path.join(output_path, file_name)
         with open(file_path, "w", encoding="utf-8") as file:
-            file.write(generate_index_page(self, stylesheet_path=f"./{stylesheet_file_name}"))
+            file.write(generate_index_page(self, stylesheet_path=new_style_sheet_path))
     
     
             
