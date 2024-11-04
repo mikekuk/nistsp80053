@@ -55,7 +55,7 @@ Controls can include placeholders for organization-specific values, known as "op
 
 ```python
 # Set options for a control
-next_option = control_set_r4.get_outstanding_options(add_context=True)[0]
+next_option = control_set_r4.get_outstanding_options()[0]
 control_set_r4.controls[next_option['control_id']].set_option(next_option['id'], "Custom Value")
 ```
 
