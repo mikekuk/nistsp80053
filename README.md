@@ -20,7 +20,7 @@ The library is designed around classes that handle NIST control data, baselines,
 - NIST SP800-53 XML files for Revision 4 (`etc/800-53-rev4-controls.xml`) or Revision 5 (`etc/SP_800-53_v5_1_XML.xml`). Both included in this repository.
 - Optional: CSV for predefined baselines (`etc/sp800-53b-control-baselines.csv`). Included in this repository.
 - Currently requires xmltodict library. Future releases will remove this dependency so that it runs on core python only.
-- 
+  
 ## Usage
 
 ### Initializing Control Libraries
