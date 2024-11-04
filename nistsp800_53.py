@@ -1,5 +1,7 @@
 import json
 import csv
+import os
+import shutil
 from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_multiple_entries, generate_sections, replace_placeholder
 
 
@@ -80,6 +82,9 @@ class Nist_sp_800_53_control(Control):
         self.discussion = None
         if self._discussion_raw:
             self.discussion = self._discussion_raw[0]['description']['p']
+            # Handel some instances where discussion parses as a list
+            if isinstance(self.discussion, list):
+                self.discussion = " ".join(self.discussion)
         self.references = fields['references']
         self.control_enhancements = {}
         if self._control_enhancements:
@@ -257,6 +262,7 @@ class Nist_sp800_53(Library):
         self.revision = 0
         self._baseline_object = None
         self.baseline = 'All controls'
+        self.name = None
         for control in self._raw_controls:
             control_object = Nist_sp_800_53_control(control)
             key = control_object.number
@@ -299,6 +305,42 @@ class Nist_sp800_53(Library):
             outstanding_options += self.controls[control_id].get_outstanding_options(add_context)
         return outstanding_options
 
+    def export_html_docset(self, output_path: str, stylesheet_path: str = "") -> None:
+        """Creates an html document set for the library.
+
+        Args:
+            output_path (str): The location of the director to save the document set.
+            stylesheet_path (str, optional): Filepath to a css stylesheet.
+
+        """
+        # Create the path if it does not already exist
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+            
+        # Copy css file to output dir
+        # Extract the file name from the source file path
+        file_name = os.path.basename(stylesheet_path)
+        # Create the full destination path
+        dest_path = os.path.join(output_path, file_name)
+        # Copy the file to the destination directory
+        shutil.copy(stylesheet_path, dest_path)
+        
+        # TODO: Build index page.
+        
+        #  Generate control documents
+        controls_key_list = self.controls.keys()
+        
+        for key in controls_key_list:
+            file_name = f"{key}.html"
+            file_path = os.path.join(output_path, file_name)
+            with open(file_path, "w", encoding="utf-8") as file:
+                file.write(self.controls.get(key).get_control_html(stylesheet_path = stylesheet_path))
+            
+            
+        
+        
+        
+        
         
     
 

@@ -1,31 +1,33 @@
 # NIST SP800-53 Control Library
 
-This library provides a structured representation of the NIST Special Publication 800-53 controls. It enables parsing, manipulation, and formatted output of controls as defined in SP800-53 Revision 4 and Revision 5 XML files. The library is designed to help organizations handle, customize, and export NIST controls and their associated metadata in both plain text and Markdown formats.
+This Python library provides a structured framework for managing the controls specified in the NIST Special Publication 800-53. It allows for parsing, customization, and export of NIST controls from both Revision 4 and Revision 5 XML files. Users can tailor controls to organization-specific needs, apply baselines, set options, and output controls in various formats, including HTML.
 
 ## Overview
 
-The library is organized into classes that parse and manage NIST control data, baselines, and control enhancements, supporting the creation of custom control sets based on organization-specific requirements.
+The library is designed around classes that handle NIST control data, baselines, and enhancements, offering flexibility in customizing control sets based on privacy, impact levels, and compliance requirements. Predefined baselines and an easy-to-use API simplify integrating this library into compliance workflows.
 
 ## Features
 
-- Parse XML representations of NIST SP800-53 control sets.
-- Define custom baselines by selecting specific controls.
-- Apply user-defined variable options to customize control fields.
-- Format controls as plain text or Markdown.
+- **XML Parsing:** Parses SP800-53 Revision 4 and 5 XML files for easy control access and manipulation.
+- **Control Customization:** Allows setting custom values for organization-specific variables within controls.
+- **Baseline Support:** Supports predefined baselines for Privacy, Low, Moderate, and High impact levels across both Revision 4 and 5. Additionally, a JSIG baseline is available for SAP systems under Revision 4.
+- **Output Formatting:** Outputs controls as plain text, Markdown, or HTML with optional CSS styling.
+- **HTML Export:** Exports control sets as a fully structured HTML document set for web or internal documentation.
 
 ## Requirements
 
 - Python 3.7+
-- XML files for SP800-53 Revision 4 or Revision 5 controls (`etc/800-53-rev4-controls.xml` and `etc/SP_800-53_v5_1_XML.xml`)
+- NIST SP800-53 XML files for Revision 4 (`etc/800-53-rev4-controls.xml`) or Revision 5 (`etc/SP_800-53_v5_1_XML.xml`)
+- Optional: CSV for predefined baselines (`etc/sp800-53b-control-baselines.csv`)
 
 ## Usage
 
 ### Initializing Control Libraries
 
-The library supports both Revision 4 and Revision 5 control sets. Initialize by creating an instance of `Nist_sp_800_53_r4` or `Nist_sp_800_53_r5`, depending on the desired revision.
+The library supports both SP800-53 Revision 4 and Revision 5. To get started, create an instance of `Nist_sp_800_53_r4` or `Nist_sp_800_53_r5`:
 
 ```python
-import Nist_sp_800_53_r4, Nist_sp_800_53_r5
+from nistsp800_53 import Nist_sp_800_53_r4, Nist_sp_800_53_r5
 
 # For Revision 4 controls
 control_set_r4 = Nist_sp_800_53_r4()
@@ -34,109 +36,81 @@ control_set_r4 = Nist_sp_800_53_r4()
 control_set_r5 = Nist_sp_800_53_r5()
 ```
 
-### Accessing Controls
+### Applying Baselines
 
-Controls are parsed and stored as instances of `Nist_sp_800_53_control`, and each control's information can be printed or accessed programmatically.
-
-```python
-# Print control details
-print(control_set_r4.controls['AC-1'])
-```
-
-### Formatting Controls
-
-Controls can be output in plain text or Markdown formats for easy documentation.
+You can apply predefined or custom baselines to focus on specific control sets. Revision 4 and 5 support Privacy, Low, Moderate, and High impact level baselines. Revision 4 also includes a JSIG baseline for SAP systems.
 
 ```python
-# Get control text
-text_output = control_set_r4.controls['AC-1'].get_control_text()
+from baselines import baseline_jsig
 
-# Get control markdown
-markdown_output = control_set_r4.controls['AC-1'].get_control_markdown()
+# Load JSIG baseline for Revision 4
+control_set_r4.load_baseline(baseline_jsig)
+print(control_set_r4)
 ```
 
-### Control Enhancements
+### Setting Custom Options
 
-Control enhancements provide additional requirements that augment the main control. Each enhancement is parsed and stored in a dictionary within the control object, accessible through the `control_enhancements` attribute. Enhancements can be further customized, formatted, and applied to the main control as part of the baseline.
+Controls can include placeholders for organization-specific values, known as "options." These can be set programmatically.
 
 ```python
-# Access control enhancements for a specific control
-enhancements = control_set_r4.controls['AC-1'].control_enhancements
-print(enhancements)
+# Set options for a control
+next_option = control_set_r4.get_outstanding_options(add_context=True)[0]
+control_set_r4.controls[next_option['control_id']].set_option(next_option['id'], "Custom Value")
 ```
 
-### User-Defined Variables (Options)
+### Exporting to HTML
 
-Some controls include user-defined variables that can be set to tailor the control to organizational needs. These variables, referred to as "options" in the code, allow users to specify values that reflect the control’s application within the organization. Options are set and accessed using the `set_option` method in the control class. 
-
-To view available options, use the `control.options` attribute:
+You can export the control set as HTML, with optional CSS for styling. Each control will be saved as a separate HTML document.
 
 ```python
-# View available options for a control
-control = control_set_r4.controls['AC-1']
-print(control.options)
-
-# Set a user-defined variable for a control
-control.set_option('option_id', 'Custom Value')
+control_set_r4.export_html_docset(output_path="example_docs", stylesheet_path="styles.css")
 ```
 
-### Working with Baselines
-
-Create a custom baseline by defining a set of controls and applying it to a control library instance.
-
-```python
-from your_module import Baseline
-
-# Define a baseline with specific controls
-custom_baseline = Baseline(controls={'AC-1': {}, 'AC-2': {}}, name="Custom Baseline", revision=4)
-control_set_r4.load_baseline(custom_baseline)
-```
-
-### Predefined Baselines
-
-The `baselines` directory contains predefined baseline objects for both SP800-53 Revision 4 and Revision 5, with varying impact levels:
-
-- **Revision 4**: `Privacy`, `Low`, `Moderate`, `High`
-- **Revision 5**: `Privacy`, `Low`, `Moderate`, `High`
-
-These baseline objects can be directly imported and applied to control libraries for convenience.
-
-## Classes
+## Library Classes
 
 ### `Control`
 
-Base class for all control types. Currently a placeholder for future shared functionality among control classes.
+Base class for all control types, enabling shared functionality across control classes.
 
 ### `Baseline`
 
-Defines a control baseline with a specified set of controls and metadata. Used to filter controls in a library based on the baseline's requirements.
+Defines a baseline with a specified set of controls. Baselines filter controls based on defined impact levels or organizational criteria.
 
 ### `Library`
 
-Base class for the control library, initializing with an empty control set. Extended by the NIST control classes.
+Parent class for the control library. Initializes with an empty control set.
 
 ### `Nist_sp_800_53_control`
 
-Represents an individual control, with fields parsed from the XML representation. Provides methods to set custom options, output control data in text or Markdown, and track control enhancements.
+Represents an individual control, with fields parsed from XML. Supports setting custom options, exporting control data, and formatting enhancements.
 
-### `Nist_sp800_53`
+### `Nist_sp800_53`, `Nist_sp_800_53_r4`, and `Nist_sp_800_53_r5`
 
-Parent class for all NIST SP800-53 libraries, handling XML parsing, control loading, and baseline filtering.
-
-### `Nist_sp_800_53_r4` and `Nist_sp_800_53_r5`
-
-Subclasses of `Nist_sp800_53` tailored to Revision 4 and Revision 5 of the SP800-53 standard, respectively. Each initializes with the appropriate XML data path.
+Core classes that manage controls and apply baselines for SP800-53 Revision 4 and Revision 5 standards. Each initializes with the appropriate XML data path and revision-specific baselines.
 
 ## Example
 
+Here's a full example of initializing, setting options, and exporting controls:
+
 ```python
-# Initialize the library
-nist_controls = Nist_sp_800_53_r5()
+from nistsp800_53 import Nist_sp_800_53_r4, Nist_sp_800_53_r5
+from baselines import baseline_jsig
 
-# Print control details in Markdown
-print(nist_controls.controls['AC-1'].get_control_markdown())
+# Initialize library with Revision 4 controls
+control_set = Nist_sp_800_53_r4()
 
-# Load a baseline
-baseline = Baseline(controls={'AC-1': {}, 'AC-2': {}}, name="Minimal Baseline", revision=5)
-nist_controls.load_baseline(baseline)
+# Apply JSIG baseline for SAP systems
+control_set.load_baseline(baseline_jsig)
+
+# Set a custom option
+next_option = control_set.get_outstanding_options(add_context=True)[0]
+control_set.controls[next_option['control_id']].set_option(next_option['id'], "Custom Value")
+
+# View control as Markdown
+print(control_set.controls['AC-1'].get_control_markdown())
+
+# Export controls as HTML with styling
+control_set.export_html_docset(output_path="html_docs", stylesheet_path="styles.css")
 ```
+
+This example highlights the full process: initializing controls, applying baselines, customizing options, and exporting documents. With flexible baseline and formatting options, the library adapts easily to organization-specific security control workflows.

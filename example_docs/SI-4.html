@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>SI-4 - INFORMATION SYSTEM MONITORING</title>
+            <link rel="stylesheet" href="example_stylesheet.css">
+        </head>
+        <body>
+            <h1>SI-4: INFORMATION SYSTEM MONITORING</h1> 
+            <div class="section" id="description">
+                <h2>Control Description</h2>
+                <p>The organization:</p>
+<ol>
+<li>
+<strong>SI-4a.</strong> Monitors the information system to detect:
+<ol>
+<li>
+<strong>SI-4a.1.</strong> Attacks and indicators of potential attacks in accordance with [Assignment: organization-defined monitoring objectives]; and
+</li>
+<li>
+<strong>SI-4a.2.</strong> Unauthorized local, network, and remote connections;
+</li>
+</ol>
+</li>
+<li>
+<strong>SI-4b.</strong> Identifies unauthorized use of the information system through [Assignment: organization-defined techniques and methods];
+</li>
+<li>
+<strong>SI-4c.</strong> Deploys monitoring devices:
+<ol>
+<li>
+<strong>SI-4c.1.</strong> Strategically within the information system to collect organization-determined essential information; and
+</li>
+<li>
+<strong>SI-4c.2.</strong> At ad hoc locations within the system to track specific types of transactions of interest to the organization;
+</li>
+</ol>
+</li>
+<li>
+<strong>SI-4d.</strong> Protects information obtained from intrusion-monitoring tools from unauthorized access, modification, and deletion;
+</li>
+<li>
+<strong>SI-4e.</strong> Heightens the level of information system monitoring activity whenever there is an indication of increased risk to organizational operations and assets, individuals, other organizations, or the Nation based on law enforcement information, intelligence information, or other credible sources of information;
+</li>
+<li>
+<strong>SI-4f.</strong> Obtains legal opinion with regard to information system monitoring activities in accordance with applicable federal laws, Executive Orders, directives, policies, or regulations; and
+</li>
+<li>
+<strong>SI-4g.</strong> Provides [Assignment: organization-defined information system monitoring information] to [Assignment: organization-defined personnel or roles] [Selection (one or more): as needed; [Assignment: organization-defined frequency]].
+</li>
+</ol>
+
+            </div>
+            
+            
+            
+            
+            
+        <div class="section" id="enhancements">
+            <h2>Control Enhancements</h2>
+            <ul>
+                <li><strong>SI-4 (1) - SYSTEM-WIDE INTRUSION DETECTION SYSTEM</strong> <p><p>The organization connects and configures individual intrusion detection tools into an information system-wide intrusion detection system.</p>
+</p></li> <li><strong>SI-4 (2) - AUTOMATED TOOLS FOR REAL-TIME ANALYSIS</strong> <p><p>The organization employs automated tools to support near real-time analysis of events.</p>
+</p></li> <li><strong>SI-4 (3) - AUTOMATED TOOL INTEGRATION</strong> <p><p>The organization employs automated tools to integrate intrusion detection tools into access control and flow control mechanisms for rapid response to attacks by enabling reconfiguration of these mechanisms in support of attack isolation and elimination.</p>
+</p></li> <li><strong>SI-4 (4) - INBOUND AND OUTBOUND COMMUNICATIONS TRAFFIC</strong> <p><p>The information system monitors inbound and outbound communications traffic [Assignment: organization-defined frequency] for unusual or unauthorized activities or conditions.</p>
+</p></li> <li><strong>SI-4 (5) - SYSTEM-GENERATED ALERTS</strong> <p><p>The information system alerts [Assignment: organization-defined personnel or roles] when the following indications of compromise or potential compromise occur: [Assignment: organization-defined compromise indicators].</p>
+</p></li> <li><strong>SI-4 (6) - RESTRICT NON-PRIVILEGED USERS</strong> <p><p>[Withdrawn: Incorporated into AC-6 (10)].</p>
+</p></li> <li><strong>SI-4 (7) - AUTOMATED RESPONSE TO SUSPICIOUS EVENTS</strong> <p><p>The information system notifies [Assignment: organization-defined incident response personnel (identified by name and/or by role)] of detected suspicious events and takes [Assignment: organization-defined least-disruptive actions to terminate suspicious events].</p>
+</p></li> <li><strong>SI-4 (8) - PROTECTION OF MONITORING INFORMATION</strong> <p><p>[Withdrawn: Incorporated into SI-4].</p>
+</p></li> <li><strong>SI-4 (9) - TESTING OF MONITORING TOOLS</strong> <p><p>The organization tests intrusion-monitoring tools [Assignment: organization-defined frequency].</p>
+</p></li> <li><strong>SI-4 (10) - VISIBILITY OF ENCRYPTED COMMUNICATIONS</strong> <p><p>The organization makes provisions so that [Assignment: organization-defined encrypted communications traffic] is visible to [Assignment: organization-defined information system monitoring tools].</p>
+</p></li> <li><strong>SI-4 (11) - ANALYZE COMMUNICATIONS TRAFFIC ANOMALIES</strong> <p><p>The organization analyzes outbound communications traffic at the external boundary of the information system and selected [Assignment: organization-defined interior points within the system (e.g., subnetworks, subsystems)] to discover anomalies.</p>
+</p></li> <li><strong>SI-4 (12) - AUTOMATED ALERTS</strong> <p><p>The organization employs automated mechanisms to alert security personnel of the following inappropriate or unusual activities with security implications: [Assignment: organization-defined activities that trigger alerts].</p>
+</p></li> <li><strong>SI-4 (13) - ANALYZE TRAFFIC / EVENT PATTERNS</strong> <p><p>The organization:</p>
+<ol>
+<li>
+<strong>SI-4 (13)(a)</strong> Analyzes communications traffic/event patterns for the information system;
+</li>
+<li>
+<strong>SI-4 (13)(b)</strong> Develops profiles representing common traffic patterns and/or events; and
+</li>
+<li>
+<strong>SI-4 (13)(c)</strong> Uses the traffic/event profiles in tuning system-monitoring devices to reduce the number of false positives and the number of false negatives.
+</li>
+</ol>
+</p></li> <li><strong>SI-4 (14) - WIRELESS INTRUSION DETECTION</strong> <p><p>The organization employs a wireless intrusion detection system to identify rogue wireless devices and to detect attack attempts and potential compromises/breaches to the information system.</p>
+</p></li> <li><strong>SI-4 (15) - WIRELESS TO WIRELINE COMMUNICATIONS</strong> <p><p>The organization employs an intrusion detection system to monitor wireless communications traffic as the traffic passes from wireless to wireline networks.</p>
+</p></li> <li><strong>SI-4 (16) - CORRELATE MONITORING INFORMATION</strong> <p><p>The organization correlates information from monitoring tools employed throughout the information system.</p>
+</p></li> <li><strong>SI-4 (17) - INTEGRATED SITUATIONAL AWARENESS</strong> <p><p>The organization correlates information from monitoring physical, cyber, and supply chain activities to achieve integrated, organization-wide situational awareness.</p>
+</p></li> <li><strong>SI-4 (18) - ANALYZE TRAFFIC / COVERT EXFILTRATION</strong> <p><p>The organization analyzes outbound communications traffic at the external boundary of the information system (i.e., system perimeter) and at [Assignment: organization-defined interior points within the system (e.g., subsystems, subnetworks)] to detect covert exfiltration of information.</p>
+</p></li> <li><strong>SI-4 (19) - INDIVIDUALS POSING GREATER RISK</strong> <p><p>The organization implements [Assignment: organization-defined additional monitoring] of individuals who have been identified by [Assignment: organization-defined sources] as posing an increased level of risk.</p>
+</p></li> <li><strong>SI-4 (20) - PRIVILEGED USERS</strong> <p><p>The organization implements [Assignment: organization-defined additional monitoring] of privileged users.</p>
+</p></li> <li><strong>SI-4 (21) - PROBATIONARY PERIODS</strong> <p><p>The organization implements [Assignment: organization-defined additional monitoring] of individuals during [Assignment: organization-defined probationary period].</p>
+</p></li> <li><strong>SI-4 (22) - UNAUTHORIZED NETWORK SERVICES</strong> <p><p>The information system detects network services that have not been authorized or approved by [Assignment: organization-defined authorization or approval processes] and [Selection (one or more): audits; alerts [Assignment: organization-defined personnel or roles]].</p>
+</p></li>
+            <ul>                
+        </div>
+        
+        
+            
+            
+        <div class="section" id="baselines">
+            <h2>Baselines</h2>
+            <p>LOW, MODERATE, HIGH</p>
+        </div>
+        
+        </body>
+        </html>
+        

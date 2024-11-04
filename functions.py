@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import xmltodict
 import re
 
 # Define a function to parse the XML to a dictionary recursively
@@ -74,12 +75,50 @@ def parse_element(element):
     
 #     return parsed_dict
 
-import xmltodict
+
+# def parse_xml(file_path: str) -> dict:
+#     """
+#     Parses the XML file at the given file path and returns a dictionary representation,
+#     ensuring that specified elements are always treated as lists for consistency.
+
+#     Args:
+#         file_path (str): The path to the XML file to be parsed.
+
+#     Returns:
+#         dict: A dictionary representation of the XML file.
+#     """
+#     # Open and read the XML file
+#     with open(file_path, 'r', encoding='utf-8') as file:
+#         xml_content = file.read()
+
+#     # Specify the elements that should always be treated as lists
+#     elements_to_force_as_list = (
+#         'controls:control',
+#         'control-enhancement',
+#         'baseline',
+#         # 'statement',
+#         'related',
+#         'discussion',
+#         # 'description',
+#         # 'p',
+#         'a'
+#     )
+
+#     # Parse the XML content into a dictionary, forcing specified elements as lists
+#     parsed_dict = xmltodict.parse(
+#         xml_content,
+#         force_list=elements_to_force_as_list
+#     )
+
+#     return parsed_dict
+
+
 
 def parse_xml(file_path: str) -> dict:
     """
     Parses the XML file at the given file path and returns a dictionary representation,
-    ensuring that specified elements are always treated as lists for consistency.
+    ensuring that specified elements are always treated as lists for consistency and
+    ignoring <a> and <q> tags, preserving only their text content.
 
     Args:
         file_path (str): The path to the XML file to be parsed.
@@ -91,17 +130,16 @@ def parse_xml(file_path: str) -> dict:
     with open(file_path, 'r', encoding='utf-8') as file:
         xml_content = file.read()
 
+    # Remove <a> and <q> tags but keep their text content
+    xml_content = re.sub(r'</?(a|q)[^>]*>', '', xml_content)
+
     # Specify the elements that should always be treated as lists
     elements_to_force_as_list = (
         'controls:control',
         'control-enhancement',
         'baseline',
-        # 'statement',
         'related',
         'discussion',
-        # 'description',
-        # 'p',
-        # 'a'
     )
 
     # Parse the XML content into a dictionary, forcing specified elements as lists
@@ -111,6 +149,7 @@ def parse_xml(file_path: str) -> dict:
     )
 
     return parsed_dict
+
 
 
 def add_options(statements: dict, id: str = "") -> dict:
@@ -474,29 +513,29 @@ def generate_sections(control):
     enhancements_section = ''
 
     if control.control_enhancements:
-        enhancemenmts_html_list = []
+        enhancements_html_list = []
         for key in control.control_enhancements.keys():
-            enhancment = control.control_enhancements.get(key)
-            enhancment_options = {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in enhancment.options.items()}
+            enhancement = control.control_enhancements.get(key)
+            enhancement_options = {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in enhancement.options.items()}
             discussion_html = ""
-            if enhancment.discussion:
-                discussion_html = f"<h3>Discusstion</h3><p>{enhancment.discussion}"
+            if enhancement.discussion:
+                discussion_html = f"<h3>Discussion</h3><p>{enhancement.discussion}"
                 
             # related_html = ""
-            # if enhancment.related:
-            #     related_links = [f'<a href="./{x}.html">{x}</a>' for x in enhancment.related if x]
+            # if enhancement.related:
+            #     related_links = [f'<a href="./{x}.html">{x}</a>' for x in enhancement.related if x]
             #     related_section = f"""
             #     <h3>Related Controls</h3>
             #     {", ".join(related_links)}
             #     """
             
-            enhancemenmts_html_list.append(f"<li><strong>{key} - {enhancment.title}</strong> <p>{replace_placeholder(dict_to_html(enhancment._statement), enhancment_options)}</p></li>")
+            enhancements_html_list.append(f"<li><strong>{key} - {enhancement.title}</strong> <p>{replace_placeholder(dict_to_html(enhancement._statement), enhancement_options)}</p></li>")
 
         enhancements_section = f"""
-        <div class="section" id="enhancments">
-            <h2>Control Enhancments</h2>
+        <div class="section" id="enhancements">
+            <h2>Control Enhancements</h2>
             <ul>
-                {" ".join(enhancemenmts_html_list)}
+                {" ".join(enhancements_html_list)}
             <ul>                
         </div>
         
@@ -611,7 +650,7 @@ def get_control_html(control, stylesheet_path:str = "") -> str:
     control_data = generate_sections(control)
 
     control_statements_html = replace_placeholder(control_data['statement_html'], options)
-    # control_enhancment_hmtl = replace_placeholder(control_data['enhancements_section'], options)
+    # control_enhancement_html = replace_placeholder(control_data['enhancements_section'], options)
 
     # Example HTML template with placeholders
     template = """<!DOCTYPE html>

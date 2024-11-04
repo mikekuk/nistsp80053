@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>SI-19 - DE-IDENTIFICATION</title>
+            <link rel="stylesheet" href="example_stylesheet.css">
+        </head>
+        <body>
+            <h1>SI-19: DE-IDENTIFICATION</h1> 
+            <div class="section" id="description">
+                <h2>Control Description</h2>
+                <ol>
+<li>
+<strong>SI-19a.</strong> Remove the following elements of personally identifiable information from datasets: [Assignment: organization-defined elements of personally identifiable information]; and
+</li>
+<li>
+<strong>SI-19b.</strong> Evaluate [Assignment: organization-defined frequency] for effectiveness of de-identification.
+</li>
+</ol>
+
+            </div>
+            
+        <div class="section" id="discussion">
+            <h2>Discussion</h2>
+            <p>De-identification is the general term for the process of removing the association between a set of identifying data and the data subject. Many datasets contain information about individuals that can be used to distinguish or trace an individual’s identity, such as name, social security number, date and place of birth, mother’s maiden name, or biometric records. Datasets may also contain other information that is linked or linkable to an individual, such as medical, educational, financial, and employment information. Personally identifiable information is removed from datasets by trained individuals when such information is not (or no longer) necessary to satisfy the requirements envisioned for the data. For example, if the dataset is only used to produce aggregate statistics, the identifiers that are not needed for producing those statistics are removed. Removing identifiers improves privacy protection since information that is removed cannot be inadvertently disclosed or improperly used. Organizations may be subject to specific de-identification definitions or methods under applicable laws, regulations, or policies. Re-identification is a residual risk with de-identified data. Re-identification attacks can vary, including combining new datasets or other improvements in data analytics. Maintaining awareness of potential attacks and evaluating for the effectiveness of the de-identification over time support the management of this residual risk.</p>
+        </div>
+        
+            
+            
+        <div class="section" id="related">
+            <h2>Related Controls</h2>
+            <a href="./MP-6.html">MP-6</a>, <a href="./PM-22.html">PM-22</a>, <a href="./PM-23.html">PM-23</a>, <a href="./PM-24.html">PM-24</a>, <a href="./RA-2.html">RA-2</a>, <a href="./SI-12.html">SI-12</a>
+        </div>
+        
+            
+            
+        <div class="section" id="enhancements">
+            <h2>Control Enhancements</h2>
+            <ul>
+                <li><strong>SI-19(1) - COLLECTION</strong> <p><p>De-identify the dataset upon collection by not collecting personally identifiable information.</p>
+</p></li> <li><strong>SI-19(2) - ARCHIVING</strong> <p><p>Prohibit archiving of personally identifiable information elements if those elements in a dataset will not be needed after the dataset is archived.</p>
+</p></li> <li><strong>SI-19(3) - RELEASE</strong> <p><p>Remove personally identifiable information elements from a dataset prior to its release if those elements in the dataset do not need to be part of the data release.</p>
+</p></li> <li><strong>SI-19(4) - REMOVAL, MASKING, ENCRYPTION, HASHING, OR REPLACEMENT OF DIRECT IDENTIFIERS</strong> <p><p>Remove, mask, encrypt, hash, or replace direct identifiers in a dataset.</p>
+</p></li> <li><strong>SI-19(5) - STATISTICAL DISCLOSURE CONTROL</strong> <p><p>Manipulate numerical data, contingency tables, and statistical findings so that no individual or organization is identifiable in the results of the analysis.</p>
+</p></li> <li><strong>SI-19(6) - DIFFERENTIAL PRIVACY</strong> <p><p>Prevent disclosure of personally identifiable information by adding non-deterministic noise to the results of mathematical operations before the results are reported.</p>
+</p></li> <li><strong>SI-19(7) - VALIDATED ALGORITHMS AND SOFTWARE</strong> <p><p>Perform de-identification using validated algorithms and software that is validated to implement the algorithms.</p>
+</p></li> <li><strong>SI-19(8) - MOTIVATED INTRUDER</strong> <p><p>Perform a motivated intruder test on the de-identified dataset to determine if the identified data remains or if the de-identified data can be re-identified.</p>
+</p></li>
+            <ul>                
+        </div>
+        
+        
+            
+            
+        <div class="section" id="baselines">
+            <h2>Baselines</h2>
+            <p>NOT SELECTED, PRIVACY</p>
+        </div>
+        
+        </body>
+        </html>
+        
