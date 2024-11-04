@@ -206,7 +206,7 @@ class Nist_sp_800_53_control(Control):
         else:
             style_section = f'<link rel="stylesheet" href="{stylesheet_path}">'
 
-        options = {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()}
+        options = {key: f'<span class="option" id="{key}"> {value["new_text"]}</span>' if value['new_text'] else f'<span class="option" id="{key}"> {value["original_text"]}</span>' for key, value in self.options.items()}
 
         control_data = generate_sections(self)
 
