@@ -2,7 +2,7 @@ import json
 import csv
 import os
 import shutil
-from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_multiple_entries, generate_sections, replace_placeholder
+from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_multiple_entries, generate_sections, replace_placeholder, generate_index_page
 
 
 class Control:
@@ -305,6 +305,22 @@ class Nist_sp800_53(Library):
             outstanding_options += self.controls[control_id].get_outstanding_options(add_context)
         return outstanding_options
 
+    def list_controls_from_family(self, family: str) -> list:
+        """Gets a lists of the control IDs for a family name.
+
+        Args:
+            family (str): Control family name in all caps.
+
+        Returns:
+            list: list of control IDs.
+        """
+        output_list = []
+        for key, control in self.controls.items():
+            if control.family == family:
+                output_list.append(key)
+        return output_list
+
+
     def export_html_docset(self, output_path: str, stylesheet_path: str = "") -> None:
         """Creates an html document set for the library.
 
@@ -319,11 +335,11 @@ class Nist_sp800_53(Library):
             
         # Copy css file to output dir
         # Extract the file name from the source file path
-        file_name = os.path.basename(stylesheet_path)
+        stylesheet_file_name = os.path.basename(stylesheet_path)
         # Create the full destination path
-        dest_path = os.path.join(output_path, file_name)
+        stylesheet_dest_path = os.path.join(output_path, stylesheet_file_name)
         # Copy the file to the destination directory
-        shutil.copy(stylesheet_path, dest_path)
+        shutil.copy(stylesheet_path, stylesheet_dest_path)
         
         # TODO: Build index page.
         
@@ -334,7 +350,15 @@ class Nist_sp800_53(Library):
             file_name = f"{key}.html"
             file_path = os.path.join(output_path, file_name)
             with open(file_path, "w", encoding="utf-8") as file:
-                file.write(self.controls.get(key).get_control_html(stylesheet_path = stylesheet_path))
+                file.write(self.controls.get(key).get_control_html(stylesheet_path = f"./{stylesheet_file_name}"))
+                
+
+        file_name = "index.html"
+        file_path = os.path.join(output_path, file_name)
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(generate_index_page(self, stylesheet_path=f"./{stylesheet_file_name}"))
+    
+    
             
             
         

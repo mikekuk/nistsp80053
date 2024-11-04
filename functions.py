@@ -59,60 +59,6 @@ def parse_element(element):
     
     return parsed_data
 
-# def parse_xml(file_path:str) -> dict:
-#     # Define the namespaces used in your XML file
-#     namespaces = {
-#         'controls': 'http://scap.nist.gov/schema/sp800-53/feed/2.0',
-#         'xhtml': 'http://www.w3.org/1999/xhtml',
-#         'xsi': 'http://www.w3.org/2001/XMLSchema-instance'
-#     }
-
-#     # Parse the XML file
-#     tree = ET.parse(file_path)
-#     root = tree.getroot()
-#     # Convert the root element to a dictionary
-#     parsed_dict = parse_element(root)
-    
-#     return parsed_dict
-
-
-# def parse_xml(file_path: str) -> dict:
-#     """
-#     Parses the XML file at the given file path and returns a dictionary representation,
-#     ensuring that specified elements are always treated as lists for consistency.
-
-#     Args:
-#         file_path (str): The path to the XML file to be parsed.
-
-#     Returns:
-#         dict: A dictionary representation of the XML file.
-#     """
-#     # Open and read the XML file
-#     with open(file_path, 'r', encoding='utf-8') as file:
-#         xml_content = file.read()
-
-#     # Specify the elements that should always be treated as lists
-#     elements_to_force_as_list = (
-#         'controls:control',
-#         'control-enhancement',
-#         'baseline',
-#         # 'statement',
-#         'related',
-#         'discussion',
-#         # 'description',
-#         # 'p',
-#         'a'
-#     )
-
-#     # Parse the XML content into a dictionary, forcing specified elements as lists
-#     parsed_dict = xmltodict.parse(
-#         xml_content,
-#         force_list=elements_to_force_as_list
-#     )
-
-#     return parsed_dict
-
-
 
 def parse_xml(file_path: str) -> dict:
     """
@@ -689,6 +635,61 @@ def get_control_html(control, stylesheet_path:str = "") -> str:
         # supplemental_guidance_section=control_data['supplemental_guidance_section'],
         # references_section=control_data['references_section'],
         baselines_section=control_data['baselines_section']
+    )
+    
+    return html_output
+
+def generate_index_page(library, stylesheet_path: str = "") -> str:
+    
+    
+    if stylesheet_path == "":
+        style_section =  ""
+    else:
+        style_section = f'<link rel="stylesheet" href="{stylesheet_path}">'
+        
+        
+        
+    name = library.name
+    
+    def generate_family_html(library, family: str) -> str:
+        controls_list = library.list_controls_from_family(family)
+        family_html = f"""
+        <div class=section id=family>
+            <h2>{family}</h2>
+        """
+        for control_idx in controls_list:
+            family_html += f"""\n\t<a href="./{control_idx}.html"><h3>{control_idx} - {library.controls.get(control_idx).title}</h3></a>"""
+        
+        family_html += "\n</div>"
+        
+        return family_html
+    
+    
+    families_list = list(set([library.controls[x].family for x in library.controls]))
+    families_list.sort()
+    families_sections = [generate_family_html(library, x) for x in families_list]
+    families_section = "\n".join(families_sections)
+            
+    template = """<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{name} - Control Index</title>
+        {style_section}
+    </head>
+    <body>
+        <h1>{name} - Control Index</h1> 
+        
+        {families_section}
+        
+    </body>
+    </html>
+    """
+    
+    html_output = template.format(
+        name = name,
+        style_section = style_section,
+        families_section = families_section
     )
     
     return html_output
