@@ -2,6 +2,7 @@ import json
 import csv
 import os
 import shutil
+import pickle
 from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_multiple_entries, generate_sections, replace_placeholder, generate_index_page
 
 
@@ -360,16 +361,28 @@ class Nist_sp800_53(Library):
         file_path = os.path.join(output_path, file_name)
         with open(file_path, "w", encoding="utf-8") as file:
             file.write(generate_index_page(self, stylesheet_path=new_style_sheet_path))
+            
+    def save(self, file_name: str = "control_set_export.plk") -> None:
+        """Saves object with pickle
+   
+        Args:
+            file_name (str, optional): Name to save file as. Defaults to "control_set_export.plk" Self.name is prepended if it is defined.
+
+        """
+        
+        if file_name == "control_set_export.plk" and self.name:
+            file_name = self.name + "_" + file_name
+        
+        with open(file_name, 'wb') as f:
+            pickle.dump(self, f) 
     
-    
+    @classmethod
+    def load(cls, filename):
+        """Load an instance of the class from a pickle file."""
+        with open(filename, 'rb') as f:
+            return pickle.load(f)
             
             
-        
-        
-        
-        
-        
-    
 
 class Nist_sp_800_53_r4(Nist_sp800_53):
     def __init__(self) -> None:
