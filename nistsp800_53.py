@@ -99,34 +99,54 @@ class Nist_sp_800_53_control(Control):
                         raise BaseException(f"{self.number}\n\n{control}\n\n{self._control_enhancements}")
         # Needed to handel cases where the control enchantment is only a single item, when it is a dict not list
         elif self._control_enhancements and record_type == dict and len(self._control_enhancements) > 0:
-            self._control_enhancements['control-enhancement']['number'] = (Nist_sp_800_53_control(self._control_enhancements))
+            self.control_enhancements['control-enhancement']['number'] = (Nist_sp_800_53_control(self._control_enhancements))
         # Add options dict and replace sections with format string UIDs
+
         self.options = add_options(self._statement, self.number)
         
-    def set_option(self, option: str, value: str) -> None:
+    def set_option(self, option_id: str, value: str) -> None:
         """Set an option for organisation assignment ot section.
 
         Args:
             option (str): optation UID to set
             value (str): value to write to option
         """
-        self.options[option]['new_text'] = value
-    
-    def get_outstanding_options(self, add_context: bool = False) -> list[dict]:
-        """Returns a list of options that have no new text value assigned.
+        if option_id in self.options:
+            self.options[option_id]['new_text'] = value
+        elif option_id in self.get_options():
+            enhancement_number = self.get_options()[option_id]['number']
+            self.control_enhancements[enhancement_number].options[option_id]['new_text'] = value
+            
+            
+    def get_options(self) -> list[dict]:
+        """Returns a dict of options, including for control enhancements.
         
-        Args:
-            provide_additional_context (bool): Adds the full text of the control as an additional field if True.
-
         Returns:
             list[dict]: List of dict options.
         """
-        refactored_options = refactor_multiple_entries(self.options)
+ 
+        # Get options for enhancements
+        enhancement_options = {}
+        for enhancement_idx in self.control_enhancements.keys():
+            enhancement_options = enhancement_options | self.control_enhancements[enhancement_idx].options
+        
+        
+        return self.options | enhancement_options
+    
+    def get_outstanding_options(self) -> list[dict]:
+        """Returns a list of options that have no new text value assigned.
+        Returns:
+            list[dict]: List of dict options.
+        """
+            
+        # Get options for enhancements
+        enhancement_options = {}
+        for enhancement_idx in self.control_enhancements.keys():
+            enhancement_options = enhancement_options | self.control_enhancements[enhancement_idx].options
+        
+        refactored_options = refactor_multiple_entries(self.options | enhancement_options)
         outstanding_options = [x for x in refactored_options if not x['new_text']]
         
-        if add_context:
-            for item in outstanding_options:
-                item['Context'] = self.get_control_text()
         
         return outstanding_options
 
@@ -286,11 +306,8 @@ class Nist_sp800_53(Library):
         self._baseline_object = baseline
         self.baseline = baseline.name
     
-    def get_outstanding_options(self, add_context: bool = False) -> list[dict]:
+    def get_outstanding_options(self) -> list[dict]:
         """Gets a list of all options where the default values have not been changed.
-
-        Args:
-            add_context (bool, optional): Adds a the complete control text as an additional field. Defaults to False.
 
         Returns:
             list[dict]: A list of the outstanding tasks as dicts with. Example of dict format:
@@ -303,7 +320,7 @@ class Nist_sp800_53(Library):
         """
         outstanding_options = []
         for control_id in self.controls.keys():
-            outstanding_options += self.controls[control_id].get_outstanding_options(add_context)
+            outstanding_options += self.controls[control_id].get_outstanding_options()
         return outstanding_options
 
     def list_controls_from_family(self, family: str) -> list:
@@ -420,13 +437,10 @@ class Nist_sp_800_53_r5(Nist_sp800_53):
         }
         for row in csv_data
         }
-        # Added to correct space format
-        # r5_baselines_format = {x.replace('(', ' ('): y for x, y in r5_baselines.items()}
+    
         for control_id in self.controls.keys():
             for enhancement_id in self.controls[control_id].control_enhancements.keys():
                 try:
                     self.controls[control_id].control_enhancements[enhancement_id].baseline_impact = r5_baselines[enhancement_id]['baselines']
                 except:
                     raise BaseException(f"{control_id} {enhancement_id}")
-
-

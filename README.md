@@ -104,7 +104,7 @@ control_set = Nist_sp_800_53_r4()
 control_set.load_baseline(baseline_jsig)
 
 # Set a custom option
-next_option = control_set.get_outstanding_options(add_context=True)[0]
+next_option = control_set.get_outstanding_options()[0]
 control_set.controls[next_option['control_id']].set_option(next_option['id'], "Custom Value")
 
 # View control as Markdown
