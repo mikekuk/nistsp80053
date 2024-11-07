@@ -312,7 +312,14 @@ class Nist_sp800_53(Library):
             control_body.control_enhancements = {key: control_body.control_enhancements[key] for key in control_body.control_enhancements if key in baseline.controls[control_id]['Control Enhancement']}
         self._baseline_object = baseline
         self.baseline = baseline.name
-    
+        
+        # Load options from baseline if set
+        if len(baseline.options) >0:
+            for control_idx in self.controls.keys():
+                for option, value in baseline.options.items():
+                    self.controls[control_idx].set_option(option, value)
+            
+            
     def get_outstanding_options(self) -> list[dict]:
         """Gets a list of all options where the default values have not been changed.
 

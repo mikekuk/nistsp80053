@@ -1,3 +1,4 @@
+import json
 from nistsp800_53 import Baseline, Library, Nist_sp_800_53_r4, Nist_sp_800_53_r5
 
 def extract_baselines(library: Library) -> tuple[list[str], list[str], list[str], list[str]]:
@@ -55,3 +56,8 @@ baseline_nist_sp_800_53_r5_high = Baseline(controls=high,  name='High', revision
 
 baseline_jsig = Baseline(name='JSIG', revision=4)
 baseline_jsig.load_json('etc/jsig_controls.json')
+
+with open('etc/JSIG_Options.json', 'r') as file:
+    options = json.load(file)
+
+baseline_jsig.options = options
