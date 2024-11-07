@@ -76,9 +76,13 @@ class Nist_sp_800_53_control(Control):
         else:
             self.baseline_impact = fields['baseline']
         self._statement = fields['statement']
-        self.supplemental_guidance = fields['supplemental-guidance']
-        self._control_enhancements = fields['control-enhancements']
         self.related = fields['related']
+        self.supplemental_guidance = fields['supplemental-guidance']
+        # Handel how R4 puts related inside supplemental guidance
+        if self.supplemental_guidance:
+            self.related = self.supplemental_guidance.get("related", fields['related'])
+        self._control_enhancements = fields['control-enhancements']
+
         self._discussion_raw = fields['discussion']
         self.discussion = None
         if self._discussion_raw:
