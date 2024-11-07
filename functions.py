@@ -455,7 +455,6 @@ def generate_sections(control):
         </div>
         """
 
-    
     # Control Enhancements Section
     enhancements_section = ''
 
@@ -615,6 +614,8 @@ def get_control_html(control, stylesheet_path:str = "") -> str:
         </div>
         {discussion_section}
         
+        {supplemental_guidance_section}
+        
         {related_section}
         
         {enhancements_section}
@@ -633,7 +634,7 @@ def get_control_html(control, stylesheet_path:str = "") -> str:
         discussion_section = control_data['discussion_section'],
         related_section = control_data['related_section'],
         enhancements_section=control_data['enhancements_section'],
-        # supplemental_guidance_section=control_data['supplemental_guidance_section'],
+        supplemental_guidance_section=control_data['supplemental_guidance_section'],
         # references_section=control_data['references_section'],
         baselines_section=control_data['baselines_section']
     )

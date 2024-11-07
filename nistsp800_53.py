@@ -81,6 +81,7 @@ class Nist_sp_800_53_control(Control):
         # Handel how R4 puts related inside supplemental guidance
         if self.supplemental_guidance:
             self.related = self.supplemental_guidance.get("related", fields['related'])
+            self.supplemental_guidance = self.supplemental_guidance.get("description", None)
         self._control_enhancements = fields['control-enhancements']
 
         self._discussion_raw = fields['discussion']
@@ -253,6 +254,8 @@ class Nist_sp_800_53_control(Control):
             </div>
             {discussion_section}
             
+            {supplemental_guidance_section}
+            
             {related_section}
             
             {enhancements_section}
@@ -271,7 +274,7 @@ class Nist_sp_800_53_control(Control):
             discussion_section = control_data['discussion_section'],
             related_section = control_data['related_section'],
             enhancements_section=control_data['enhancements_section'],
-            # supplemental_guidance_section=control_data['supplemental_guidance_section'],
+            supplemental_guidance_section=control_data['supplemental_guidance_section'],
             # references_section=control_data['references_section'],
             baselines_section=control_data['baselines_section']
         )
