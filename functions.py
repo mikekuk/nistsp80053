@@ -475,7 +475,7 @@ def generate_sections(control):
             #     {", ".join(related_links)}
             #     """
             
-            enhancements_html_list.append(f"<li><strong>{key} - {enhancement.title}</strong> <p>{replace_placeholder(dict_to_html(enhancement._statement), enhancement_options)}</p></li>")
+            enhancements_html_list.append(f"""<li><strong>{key} - {enhancement.title}</strong> <p>{replace_placeholder(dict_to_html(enhancement._statement), enhancement_options)}</p><div class="enhancement_additional_context" {enhancement.additional_context_html}</div></li>""")
 
         enhancements_section = f"""
         <div class="section" id="enhancements">
@@ -530,6 +530,16 @@ def generate_sections(control):
         </div>
         """
 
+    # Additional Context Section
+    additional_context_section = ''
+    if control.additional_context_html:
+        additional_context_section = f"""
+        <div class="section" id="additional_context">
+            <h2>Additional Context</h2>
+            {control.additional_context_html}
+        </div>
+        """
+
 
     control_data = {
         'name': name, 
@@ -541,105 +551,106 @@ def generate_sections(control):
         'references_section': references_section,
         'baselines_section': baselines_section,
         'discussion_section': discussion_section,
-        'enhancements_section': enhancements_section
+        'enhancements_section': enhancements_section,
+        'additional_context_section': additional_context_section
     }
     return control_data
 
 
-def get_control_html(control, stylesheet_path:str = "") -> str:
+# def get_control_html(control, stylesheet_path:str = "") -> str:
     
-    """
-    Generates an HTML page for a specific control, formatted with a title, description, and other sections,
-    optionally including a linked stylesheet.
+#     """
+#     Generates an HTML page for a specific control, formatted with a title, description, and other sections,
+#     optionally including a linked stylesheet.
 
-    Parameters:
-    - control (object): An object containing details about the control, including identifier, name, and sections
-                        such as control statements, discussion, related sections, enhancements, and baselines.
-                        Each section is formatted with specific options and placeholders.
-    - stylesheet_path (str): A string path to an optional CSS stylesheet for styling the HTML page.
-                             Defaults to an empty string, which omits the stylesheet link in the HTML.
+#     Parameters:
+#     - control (object): An object containing details about the control, including identifier, name, and sections
+#                         such as control statements, discussion, related sections, enhancements, and baselines.
+#                         Each section is formatted with specific options and placeholders.
+#     - stylesheet_path (str): A string path to an optional CSS stylesheet for styling the HTML page.
+#                              Defaults to an empty string, which omits the stylesheet link in the HTML.
 
-    Returns:
-    - str: A string containing the fully formatted HTML page as a template, filled with content from the
-           control object. If a stylesheet path is provided, includes a `<link>` tag in the `<head>` section
-           for CSS styling.
+#     Returns:
+#     - str: A string containing the fully formatted HTML page as a template, filled with content from the
+#            control object. If a stylesheet path is provided, includes a `<link>` tag in the `<head>` section
+#            for CSS styling.
 
-    Functionality:
-    - If `stylesheet_path` is provided, the function includes it in the HTML `<head>` section as a link to
-      external CSS.
-    - Extracts `options` from the `control` object, replacing placeholders in control text with the appropriate
-      values.
-    - Retrieves control data sections (e.g., statements, discussion, related items, enhancements) from the
-      `generate_sections` function.
-    - Uses `replace_placeholder` to substitute any placeholder values within the control text.
-    - Constructs the final HTML document with a structured layout including a title, main heading, and various
-      sections specific to the control.
+#     Functionality:
+#     - If `stylesheet_path` is provided, the function includes it in the HTML `<head>` section as a link to
+#       external CSS.
+#     - Extracts `options` from the `control` object, replacing placeholders in control text with the appropriate
+#       values.
+#     - Retrieves control data sections (e.g., statements, discussion, related items, enhancements) from the
+#       `generate_sections` function.
+#     - Uses `replace_placeholder` to substitute any placeholder values within the control text.
+#     - Constructs the final HTML document with a structured layout including a title, main heading, and various
+#       sections specific to the control.
 
-    Example Usage:
-    ```
-    html_output = get_control_html(au_4, "styles.css")
-    print(html_output)
-    ```
+#     Example Usage:
+#     ```
+#     html_output = get_control_html(au_4, "styles.css")
+#     print(html_output)
+#     ```
 
-    The function is ideal for dynamically generating HTML representations of control documents, useful for 
-    applications needing a web-based presentation of control data.
+#     The function is ideal for dynamically generating HTML representations of control documents, useful for 
+#     applications needing a web-based presentation of control data.
 
-    """
+#     """
     
-    if stylesheet_path == "":
-        style_section =  ""
-    else:
-        style_section = f'<link rel="stylesheet" href="{stylesheet_path}">'
+#     if stylesheet_path == "":
+#         style_section =  ""
+#     else:
+#         style_section = f'<link rel="stylesheet" href="{stylesheet_path}">'
 
-    options = {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in control.options.items()}
+#     options = {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in control.options.items()}
 
-    control_data = generate_sections(control)
+#     control_data = generate_sections(control)
 
-    control_statements_html = replace_placeholder(control_data['statement_html'], options)
-    # control_enhancement_html = replace_placeholder(control_data['enhancements_section'], options)
+#     control_statements_html = replace_placeholder(control_data['statement_html'], options)
+#     # control_enhancement_html = replace_placeholder(control_data['enhancements_section'], options)
 
-    # Example HTML template with placeholders
-    template = """<!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{control_identifier} - {control_name}</title>
-        {style_section}
-    </head>
-    <body>
-        <h1>{control_identifier}: {control_name}</h1> 
-        <div class="section" id="description">
-            <h2>Control Description</h2>
-            {control_statements_html}
-        </div>
-        {discussion_section}
+#     # Example HTML template with placeholders
+#     template = """<!DOCTYPE html>
+#     <html>
+#     <head>
+#         <meta charset="UTF-8">
+#         <title>{control_identifier} - {control_name}</title>
+#         {style_section}
+#     </head>
+#     <body>
+#         <h1>{control_identifier}: {control_name}</h1> 
+#         <div class="section" id="description">
+#             <h2>Control Description</h2>
+#             {control_statements_html}
+#         </div>
+#         {discussion_section}
         
-        {supplemental_guidance_section}
+#         {supplemental_guidance_section}
         
-        {related_section}
+#         {related_section}
         
-        {enhancements_section}
+#         {enhancements_section}
         
-        {baselines_section}
-    </body>
-    </html>
-    """
+#         {baselines_section}
+#     </body>
+#     </html>
+#     """
 
-    # Populate the template
-    html_output = template.format(
-        style_section=style_section,
-        control_identifier=control_data['control_identifier'],
-        control_name=control_data['name'],
-        control_statements_html=control_statements_html,
-        discussion_section = control_data['discussion_section'],
-        related_section = control_data['related_section'],
-        enhancements_section=control_data['enhancements_section'],
-        supplemental_guidance_section=control_data['supplemental_guidance_section'],
-        # references_section=control_data['references_section'],
-        baselines_section=control_data['baselines_section']
-    )
+#     # Populate the template
+#     html_output = template.format(
+#         style_section=style_section,
+#         control_identifier=control_data['control_identifier'],
+#         control_name=control_data['name'],
+#         control_statements_html=control_statements_html,
+#         discussion_section = control_data['discussion_section'],
+#         related_section = control_data['related_section'],
+#         enhancements_section=control_data['enhancements_section'],
+#         supplemental_guidance_section=control_data['supplemental_guidance_section'],
+#         # references_section=control_data['references_section'],
+#         baselines_section=control_data['baselines_section']
+#     )
     
-    return html_output
+#     return html_output
 
 def generate_index_page(library, stylesheet_path: str = "") -> str:
     

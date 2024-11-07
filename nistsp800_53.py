@@ -17,6 +17,7 @@ class Baseline:
         self.name = name
         self.revision = revision
         self.options = {}
+        self.additional_context_html = None
         
     def __str__(self) -> str:
         return f"NIST SP800-53_r{self.revision} {self.name} Baseline Object"
@@ -108,6 +109,7 @@ class Nist_sp_800_53_control(Control):
         # Add options dict and replace sections with format string UIDs
 
         self.options = add_options(self._statement, self.number)
+        self.additional_context_html = None
         
     def set_option(self, option_id: str, value: str) -> None:
         """Set an option for organisation assignment ot section.
@@ -261,6 +263,8 @@ class Nist_sp_800_53_control(Control):
             {enhancements_section}
             
             {baselines_section}
+            
+            {additional_context_section}
         </body>
         </html>
         """
@@ -276,7 +280,8 @@ class Nist_sp_800_53_control(Control):
             enhancements_section=control_data['enhancements_section'],
             supplemental_guidance_section=control_data['supplemental_guidance_section'],
             # references_section=control_data['references_section'],
-            baselines_section=control_data['baselines_section']
+            baselines_section=control_data['baselines_section'],
+            additional_context_section = control_data['additional_context_section']
         )
         
         return html_output        
@@ -318,6 +323,13 @@ class Nist_sp800_53(Library):
             for control_idx in self.controls.keys():
                 for option, value in baseline.options.items():
                     self.controls[control_idx].set_option(option, value)
+                    
+        # Load additional context html
+        if baseline.additional_context_html:
+            for control_idx in self.controls.keys():
+                self.controls[control_idx].additional_context_html = baseline.additional_context_html.get(control_idx, None)
+                for enhancement_idx in self.controls[control_idx].control_enhancements.keys():
+                    self.controls[control_idx].control_enhancements[enhancement_idx].additional_context_html = baseline.additional_context_html.get(enhancement_idx, None)
             
             
     def get_outstanding_options(self) -> list[dict]:

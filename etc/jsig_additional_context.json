@@ -1,0 +1,9 @@
+{
+    "IR-1": "<p>DoD SAP specific policy and procedures related to incident response are defined in the remainder of this section. Background information as it applies to incident response is provided throughout this section.</p>",
+    "IR-2": "<p>Incident recognition and reporting training shall be included as part of both general and privileged user awareness training. See also Security Training [AT-3].</p> <p>General users must be trained on what constitutes suspicious activity as it applies to the system, other users, and unauthorized individuals internal and external to the organization. General users must also know to whom and when to report suspicious activity and to keep discussions about potential incidents within the incident response chain of command.</p> <p>Privileged users should be trained in preserving the scene, preserving the data (volatile and nonvolatile), chain of custody, and reporting requirements. Privileged users frequently move from the containment phase to eradication compromising data necessary in prosecuting a potentially criminal case. Privileged users must also know who to contact for assistance in responding to an incident, e.g., the organizations IA point of contact. Additional incident response related training may be required depending on the system, environment, and mission criticality.</p>",
+    "IR-2(1)": "<p>Emphasis is on simulated, e.g., table top exercises, hot-wash, lessons learned. Use of ‘live’ data (e.g., ‘controlled viruses’) must have prior approval by the AO.</p>",
+    "IR-3": "<p>Lessons learned should be documented and incorporated into future exercises. If there were no incidents during the past year, the incident response plan shall be tested using a simulated incident/event. </p>",
+    "IR-4": "",
+    
+
+}

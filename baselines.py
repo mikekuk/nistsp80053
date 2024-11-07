@@ -1,4 +1,5 @@
 import json
+import os
 from nistsp800_53 import Baseline, Library, Nist_sp_800_53_r4, Nist_sp_800_53_r5
 
 def extract_baselines(library: Library) -> tuple[list[str], list[str], list[str], list[str]]:
@@ -59,5 +60,22 @@ baseline_jsig.load_json('etc/jsig_controls.json')
 
 with open('etc/JSIG_Options.json', 'r') as file:
     options = json.load(file)
+
+directory_path = 'etc/jsig_additional_context'
+
+# Initialize an empty dictionary to store file names and HTML content
+baseline_jsig.additional_context_html = {}
+
+# Loop through all files in the specified directory
+for filename in os.listdir(directory_path):
+    # Check if the file has an '.html' extension
+    if filename.endswith('.html'):
+        # Create the key by removing the '.html' extension
+        key = filename[:-5]
+        # Open the file and read its content
+        with open(os.path.join(directory_path, filename), 'r', encoding='utf-8') as file:
+            html_content = file.read()
+        # Store the content in the dictionary with the filename as the key
+        baseline_jsig.additional_context_html[key] = html_content
 
 baseline_jsig.options = options

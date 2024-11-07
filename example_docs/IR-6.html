@@ -12,10 +12,10 @@
                 <p>The organization:</p>
 <ol>
 <li>
-<strong>IR-6a.</strong> Requires personnel to report suspected security incidents to the organizational incident response capability within <span class="option" id="IR-6a_Option1"> [Assignment: organization-defined time period]</span>; and
+<strong>IR-6a.</strong> Requires personnel to report suspected security incidents to the organizational incident response capability within <span class="option" id="IR-6a_Option1"> 24 hours if not otherwise defined in formal organizational policy</span>; and
 </li>
 <li>
-<strong>IR-6b.</strong> Reports security incident information to <span class="option" id="IR-6b_Option1"> [Assignment: organization-defined authorities]</span>.
+<strong>IR-6b.</strong> Reports security incident information to <span class="option" id="IR-6b_Option1"> the appropriate SAP Agency CIRT/CERT (see IR-4(8))</span>.
 </li>
 </ol>
 
@@ -41,9 +41,25 @@
             <h2>Control Enhancements</h2>
             <ul>
                 <li><strong>IR-6(1) - AUTOMATED REPORTING</strong> <p><p>The organization employs automated mechanisms to assist in the reporting of security incidents.</p>
-</p></li> <li><strong>IR-6(2) - VULNERABILITIES RELATED TO INCIDENTS</strong> <p><p>The organization reports information system vulnerabilities associated with reported security incidents to <span class="option" id="IR-6(2)_Option1"> [Assignment: organization-defined personnel or roles]</span>.</p>
-</p></li> <li><strong>IR-6(3) - COORDINATION WITH SUPPLY CHAIN</strong> <p><p>The organization provides security incident information to other organizations involved in the supply chain for information systems or information system components related to the incident.</p>
-</p></li>
+</p><div class="enhancement_additional_context" <p>
+    Differing types of automated mechanisms can meet the intent of IR-6(1) This mechanism
+may be a web-based form that is populated by the ISSM/ISSO or SA alerting the
+appropriate individuals, or an email process that includes a preset distribution group to
+ensure all key individuals are alerted in the event of an incident, e.g., ISSM/ISSO,
+GSSO/CPSO, PSO/Director of Security, Incident Response lead (e.g., SAPCO’s IA
+POC), DAO, and AO. Where a web-based form or email distribution is used, the
+responder should be cautious of the type of incident and the classification of information
+in the incident description and the classification of the system being used.
+</p></div></li> <li><strong>IR-6(2) - VULNERABILITIES RELATED TO INCIDENTS</strong> <p><p>The organization reports information system vulnerabilities associated with reported security incidents to <span class="option" id="IR-6(2)_Option1"> [Assignment: organization-defined personnel or roles]</span>.</p>
+</p><div class="enhancement_additional_context" <p>
+    Service/Agency SAPCOs should identify an entity to provide Computer Network
+Defense (CND). PSOs and field reps would then report all incidents to the CND Service
+Provider (CNDSP) for analysis and response determination, providing guidance to the
+site as needed. This provides an organization-wide awareness of incidents, a broader
+capability for identifying trends, and the potential to share information with other
+organizations in the community.
+</p></div></li> <li><strong>IR-6(3) - COORDINATION WITH SUPPLY CHAIN</strong> <p><p>The organization provides security incident information to other organizations involved in the supply chain for information systems or information system components related to the incident.</p>
+</p><div class="enhancement_additional_context" None</div></li>
             <ul>                
         </div>
         
@@ -53,6 +69,43 @@
         <div class="section" id="baselines">
             <h2>Baselines</h2>
             <p>LOW, MODERATE, HIGH</p>
+        </div>
+        
+            
+            
+        <div class="section" id="additional_context">
+            <h2>Additional Context</h2>
+            <p>
+    In the case of a suspected incident, containment procedures must begin immediately.
+However, PSO/GSSO/CPSO confirmation of the classification of the information spilled is
+required promptly so decisions concerning scale of containment and eradication efforts can
+be scoped, e.g., SAP data spilled onto another SAP system tends to be (although not always)
+less critical than SAP data spilled to an unclassified system.
+</p>
+<p>
+    The ISSM/ISSO is responsible for reporting incidents to security as well as to the AO, e.g.,
+the ISSM/ISSO reports to the GSSO/CPSO, who in turn reports to the PSO and the PSO to
+the Director of Security and/or CA SAPCO. The ISSM/ISSO must also report the incident to
+the system DAO who in turn reports it to the AO and/or CA SAPCO. [IR-6.b] If an activity
+from another organization is involved, the PSO or Director of Security will provide proper
+notification to the organization.
+</p>
+<p>
+    Incidents in progress are classified a minimum of UNCLASSIFIED//Handle via Special
+Access Channels Only (U//HVSACO). The PSO should be notified via secure
+communications as soon as an incident has occurred or is in progress. Initial/interim
+reporting should begin as soon as possible after knowledge of the incident and should
+continue until the incident is resolved.
+</p>
+<p>
+    Organizations will continue to report until the incident is closed. The CA SAPCO, Director
+of Security, and AO will determine follow-on actions.
+</p>
+<p>
+    Information system-related fraud, waste, and abuse issues should be reported to the PSO,
+ISO and/or ISSM/ISSO and dealt with by the organization’s chain of command. Individuals
+also have the right to call the Fraud, Waste and Abuse Center (FWAC) hotline.
+</p>
         </div>
         
         </body>

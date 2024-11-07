@@ -37,6 +37,11 @@ h2 {
     font-weight: bold;
 }
 
+/* Italic text for enhancement additional context */
+.enhancement_additional_context {
+    font-style: italic;
+}
+
 /* Links and text formatting */
 a {
     color: #3498db;
@@ -60,4 +65,16 @@ a:hover {
     background-color: #dff0d8;
     padding: 10px;
     border-left: 4px solid #27ae60;
+}
+
+/* Table styling */
+table {
+    border-collapse: collapse;
+    outline: 2px solid #2c3e50; /* Outline color */
+}
+
+table th,
+table td {
+    border: 1px solid #e0e0e0; /* Cell borders */
+    padding: 8px;
 }
