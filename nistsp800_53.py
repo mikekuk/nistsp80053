@@ -27,10 +27,12 @@ class Baseline:
     def load_json(self, file_path: str) -> None:
         """Loads controls from json. Json should be formatted as:
         {
-            'AC-2': {
-                'Control Enhancement: ['AC-1 (2)' 'AC-2 (3)']
+            "AC-2": {
+                "Control Enhancement": ["AC-1(2)", "AC-2(3)"]
                 },
-            AC-3: {'Control Enhancement': []}
+            "AC-3:" {
+                "Control Enhancement": []
+                }
         }
 
         Args:
@@ -139,6 +141,7 @@ class Nist_sp_800_53_control(Control):
         
         
         return self.options | enhancement_options
+    
     
     def get_outstanding_options(self) -> list[dict]:
         """Returns a list of options that have no new text value assigned.
@@ -348,6 +351,21 @@ class Nist_sp800_53(Library):
         for control_id in self.controls.keys():
             outstanding_options += self.controls[control_id].get_outstanding_options()
         return outstanding_options
+    
+    def get_control(self, control_ref: str) -> Nist_sp_800_53_control:
+        if "(" in control_ref:
+            enhancement = True
+        else:
+            enhancement = False
+        
+        if not enhancement:
+            return self.controls[control_ref]
+        
+        # Is enhancement, so split the reference by ( to find the control to which the enhancement belongs
+        control_master_ref = control_ref.split('(')[0]
+        return self.controls[control_master_ref].control_enhancements[control_ref]
+        
+  
 
     def list_controls_from_family(self, family: str) -> list:
         """Gets a lists of the control IDs for a family name.
