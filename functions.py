@@ -61,43 +61,6 @@ def parse_element(element):
     return parsed_data
 
 
-def parse_xml(file_path: str) -> dict:
-    """
-    Parses the XML file at the given file path and returns a dictionary representation,
-    ensuring that specified elements are always treated as lists for consistency and
-    ignoring <a> and <q> tags, preserving only their text content.
-
-    Args:
-        file_path (str): The path to the XML file to be parsed.
-
-    Returns:
-        dict: A dictionary representation of the XML file.
-    """
-    # Open and read the XML file
-    with open(file_path, 'r', encoding='utf-8') as file:
-        xml_content = file.read()
-
-    # Remove <a> and <q> tags but keep their text content
-    xml_content = re.sub(r'</?(a|q)[^>]*>', '', xml_content)
-
-    # Specify the elements that should always be treated as lists
-    elements_to_force_as_list = (
-        'controls:control',
-        'control-enhancement',
-        'baseline',
-        'related',
-        'discussion',
-    )
-
-    # Parse the XML content into a dictionary, forcing specified elements as lists
-    parsed_dict = xmltodict.parse(
-        xml_content,
-        force_list=elements_to_force_as_list
-    )
-
-    return parsed_dict
-
-
 
 def add_options(statements: dict, id: str = "") -> dict:
     # Initialize options_dict to collect all unique IDs and their matches

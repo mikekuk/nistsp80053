@@ -3,7 +3,7 @@ import csv
 import os
 import shutil
 import pickle
-from functions import parse_xml, add_options, format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_multiple_entries, generate_sections, replace_placeholder, generate_index_page
+from functions import format_statement_to_markdown, format_statement_to_text, extract_and_format_descriptions, refactor_multiple_entries, generate_sections, replace_placeholder, generate_index_page
 
 
 class Control:
@@ -684,26 +684,26 @@ class Nist_sp800_53(Library):
         with open(filename, 'rb') as f:
             return pickle.load(f)
                  
-    def __init__(self, xml_path:str) -> None:
-        self._xml_path = xml_path
-        self._raw_controls = parse_xml(self._xml_path)['controls:controls']['controls:control']
-        self.controls = {}
-        self.revision = 0
-        self._baseline_object = None
-        self.baseline = 'All controls'
-        self.name = None
-        for control in self._raw_controls:
-            control_object = Nist_sp_800_53_control(control)
-            key = control_object.number
-            self.controls[key] = control_object
+    # def __init__(self, xml_path:str) -> None:
+    #     self._xml_path = xml_path
+    #     self._raw_controls = parse_xml(self._xml_path)['controls:controls']['controls:control']
+    #     self.controls = {}
+    #     self.revision = 0
+    #     self._baseline_object = None
+    #     self.baseline = 'All controls'
+    #     self.name = None
+    #     for control in self._raw_controls:
+    #         control_object = Nist_sp_800_53_control(control)
+    #         key = control_object.number
+    #         self.controls[key] = control_object
     
-    def __str__(self) -> str:
-        control_enhancement_count = 0
-        for control in self.controls:
-            control_enhancement_count += len(self.controls[control].control_enhancements)
-        return f"NIST SP800-53 r{self.revision} Control set with {self.baseline} baseline.\n Containing {len(self.controls)} controls and {control_enhancement_count} control enhancements."
+    # def __str__(self) -> str:
+    #     control_enhancement_count = 0
+    #     for control in self.controls:
+    #         control_enhancement_count += len(self.controls[control].control_enhancements)
+    #     return f"NIST SP800-53 r{self.revision} Control set with {self.baseline} baseline.\n Containing {len(self.controls)} controls and {control_enhancement_count} control enhancements."
     
-    __repr__ = __str__
+    # __repr__ = __str__
     
     def load_baseline(self, baseline: Baseline) -> None:
         if baseline.revision != self.revision:
@@ -845,47 +845,3 @@ class Nist_sp_800_53_r5(Nist_sp800_53):
     def __init__(self) -> None:
         super().__init__(json_definition_path='etc/NISTSP800-53JSONs/SP800-53r5.json')
         self.revision = 5
-
-# class Nist_sp_800_53_r4(Nist_sp800_53):
-#     def __init__(self) -> None:
-#         super().__init__(xml_path='etc/800-53-rev4-controls.xml')
-#         self.revision = 4
-
-# class Nist_sp_800_53_r5(Nist_sp800_53):
-#     def __init__(self) -> None:
-#         super().__init__(xml_path='etc/SP_800-53_v5_1_XML.xml')
-#         self.revision = 5
-        
-#         # Initialize an empty list to hold each row as a dictionary
-#         csv_data = []
-
-#         # Open and read the CSV file
-#         with open('etc/sp800-53b-control-baselines.csv', mode='r') as file:
-#             csv_reader = csv.DictReader(file)
-            
-#             # Iterate over each row and add it to the list
-#             for row in csv_reader:
-#                 csv_data.append(dict(row))  # Convert OrderedDict to regular dict (optional)
-
-         
-#         #  Below code needed to fix issue where r5 XML files does not contain baselines for control enhancements.
-#         r5_baselines = {
-#         row['Control Identifier']: {
-#             'baselines': [
-#                 level for level, key in {
-#                     'LOW': 'Security Control Baseline - Low',
-#                     'MODERATE': 'Security Control Baseline - Moderate',
-#                     'HIGH': 'Security Control Baseline - High',
-#                     'PRIVACY': 'Privacy Baseline'
-#                 }.items() if row.get(key, '').strip()  # Include baseline if non-empty
-#             ]
-#         }
-#         for row in csv_data
-#         }
-    
-#         for control_id in self.controls.keys():
-#             for enhancement_id in self.controls[control_id].control_enhancements.keys():
-#                 try:
-#                     self.controls[control_id].control_enhancements[enhancement_id].baseline_impact = r5_baselines[enhancement_id]['baselines']
-#                 except:
-#                     raise BaseException(f"{control_id} {enhancement_id}")
