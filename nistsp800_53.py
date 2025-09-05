@@ -576,9 +576,7 @@ class Nist_sp800_53(Library):
             for control_idx in self.controls.keys():
                 self.controls[control_idx].additional_context_html = baseline.additional_context_html.get(control_idx, None)
                 for enhancement_idx in self.controls[control_idx].control_enhancements.keys():
-                    self.controls[control_idx].control_enhancements[enhancement_idx].additional_context_html = baseline.additional_context_html.get(enhancement_idx, None)
-            
-            
+                    self.controls[control_idx].control_enhancements[enhancement_idx].additional_context_html = baseline.additional_context_html.get(enhancement_idx, None)             
     def get_outstanding_options(self) -> list[dict]:
         """Gets a list of all options where the default values have not been changed.
 

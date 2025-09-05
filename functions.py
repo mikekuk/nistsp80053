@@ -438,7 +438,7 @@ def generate_sections(control):
             #     {", ".join(related_links)}
             #     """
             
-            enhancements_html_list.append(f"""<li><strong>{key} - {enhancement.title}</strong> <p>{replace_placeholder(dict_to_html(enhancement.statement), enhancement_options)}</p><div class="enhancement_additional_context" {enhancement.additional_context_html}</div></li>""")
+            enhancements_html_list.append(f"""<li><strong>{key} - {enhancement.title}</strong> <p>{replace_placeholder(dict_to_html(enhancement.statement), enhancement_options)}</p><div class="enhancement_additional_context"> {enhancement.additional_context_html}</div></li>""")
 
         enhancements_section = f"""
         <div class="section" id="enhancements">
