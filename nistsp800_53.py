@@ -78,7 +78,7 @@ class Library:
             self.baseline_impact = fields['baseline-impact']
         else:
             self.baseline_impact = fields['baseline']
-        self._statement = fields['statement']
+        self.statement = fields['statement']
         self.related = fields['related']
         self.supplemental_guidance = fields['supplemental-guidance']
         # Handel how R4 puts related inside supplemental guidance
@@ -170,7 +170,7 @@ class Library:
             f"number: {self.number}\n"
             f"title: {self.title}\n"
             f"baseline-impact: {self.baseline_impact}\n"
-            f"statement: {self._statement}\n"
+            f"statement: {self.statement}\n"
             f"supplemental-guidance: {self.supplemental_guidance}\n"
             f"control-enhancements: {self.control_enhancements}\n"
             f"related: {self.related}"
@@ -184,7 +184,7 @@ class Library:
         Returns:
             str: string in raw text
         """
-        completed_statement = extract_and_format_descriptions(self._statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
+        completed_statement = extract_and_format_descriptions(self.statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
         return format_statement_to_text(completed_statement)
 
     def get_control_markdown(self) -> str:
@@ -193,7 +193,7 @@ class Library:
         Returns:
             str: string in markdown format
         """
-        completed_statement = extract_and_format_descriptions(self._statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
+        completed_statement = extract_and_format_descriptions(self.statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
         return format_statement_to_markdown(completed_statement)
 
     def get_control_html(self, stylesheet_path:str = "") -> str:
@@ -299,11 +299,11 @@ class Nist_sp_800_53_control(Control):
             'family': None,
             'number': None,
             'title': None,
-            'baseline-impact': None,
+            'baseline_impact': None,
             'baseline': None, # syntax changed from baseline-impact for R5
             'statement': None,
-            'supplemental-guidance': None,
-            'control-enhancements': None,
+            'supplemental_guidance': None,
+            'control_enhancements': None,
             'related': None,
             'discussion': None,
             'references': None,
@@ -320,33 +320,36 @@ class Nist_sp_800_53_control(Control):
         self.family = fields['family']
         self.number = fields['number']
         self.title = fields['title']
-        if fields['baseline-impact']:
-            self.baseline_impact = fields['baseline-impact']
+        if fields['baseline_impact']:
+            self.baseline_impact = fields['baseline_impact']
         else:
             self.baseline_impact = fields['baseline']
-        self._statement = fields['statement']
+        self.statement = fields['statement']
         self.related = fields['related']
-        self.supplemental_guidance = fields['supplemental-guidance']
+        self.supplemental_guidance = fields['supplemental_guidance']
+        self.discussion = fields['discussion']
         # Handel how R4 puts related inside supplemental guidance
-        if self.supplemental_guidance:
-            self.related = self.supplemental_guidance.get("related", fields['related'])
-            self.supplemental_guidance = self.supplemental_guidance.get("description", None)
+        # if self.supplemental_guidance:
+        #     self.related = self.supplemental_guidance.get("related", fields['related'])
+        #     self.supplemental_guidance = self.supplemental_guidance.get("description", None)
             
-        self._control_enhancements = fields['control-enhancements']
+        # self._control_enhancements = fields['control_enhancements']
 
-        self._discussion_raw = fields['discussion']
-        self.discussion = None
-        if self._discussion_raw:
-            self.discussion = self._discussion_raw[0]['description']['p']
-            # Handel some instances where discussion parses as a list
-            if isinstance(self.discussion, list):
-                self.discussion = " ".join(self.discussion)
+        # self._discussion_raw = fields['discussion']
+        # self.discussion = None
+        # if self._discussion_raw:
+        #     self.discussion = self._discussion_raw[0]['description']['p']
+        #     # Handel some instances where discussion parses as a list
+        #     if isinstance(self.discussion, list):
+        #         self.discussion = " ".join(self.discussion)
         self.references = fields['references']
         
-        self.control_enhancements = {}
-        if self._control_enhancements:
-            for control in self._control_enhancements:
-                self.control_enhancements[control['number']] = Nist_sp_800_53_control(control)
+        self.control_enhancements = fields['control_enhancements'] if fields['control_enhancements'] else {}
+        for id, control in self.control_enhancements.items():
+            self.control_enhancements[id] = Nist_sp_800_53_control(control)
+        # if self._control_enhancements:
+        #     for control in self._control_enhancements:
+        #         self.control_enhancements[control['number']] = Nist_sp_800_53_control(control)
     
 
         # self.options = add_options(self._statement, self.number) # Old way of adding options
@@ -407,7 +410,7 @@ class Nist_sp_800_53_control(Control):
             f"number: {self.number}\n"
             f"title: {self.title}\n"
             f"baseline-impact: {self.baseline_impact}\n"
-            f"statement: {self._statement}\n"
+            f"statement: {self.statement}\n"
             f"supplemental-guidance: {self.supplemental_guidance}\n"
             f"control-enhancements: {self.control_enhancements}\n"
             f"related: {self.related}"
@@ -421,7 +424,7 @@ class Nist_sp_800_53_control(Control):
         Returns:
             str: string in raw text
         """
-        completed_statement = extract_and_format_descriptions(self._statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
+        completed_statement = extract_and_format_descriptions(self.statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
         return format_statement_to_text(completed_statement)
 
     def get_control_markdown(self) -> str:
@@ -430,7 +433,7 @@ class Nist_sp_800_53_control(Control):
         Returns:
             str: string in markdown format
         """
-        completed_statement = extract_and_format_descriptions(self._statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
+        completed_statement = extract_and_format_descriptions(self.statement, {key: value['new_text'] if value['new_text'] else value['original_text']for key, value in self.options.items()})
         return format_statement_to_markdown(completed_statement)
 
     def get_control_html(self, stylesheet_path:str = "") -> str:
@@ -534,16 +537,16 @@ class Nist_sp800_53(Library):
     def __init__(self, json_definition_path: str) -> None:
         with open(json_definition_path, 'r') as file:
             controls_dict = json.load(file)
-        self.controls = {}
+        self.controls = {key: Nist_sp_800_53_control(value) for key, value in controls_dict.get('controls', {}).items()}
         self.revision = controls_dict.get('revision', 0)
         self._baseline_object = None
         self.baseline = 'All controls'
         self.name = controls_dict.get('name', '')
-        self._raw_controls = controls_dict.get('_raw_controls', [])
-        for control in self._raw_controls:
-            control_object = Nist_sp_800_53_control(control)
-            key = control_object.number
-            self.controls[key] = control_object
+        # self._raw_controls = controls_dict.get('_raw_controls', [])
+        # for control in self._raw_controls:
+        #     control_object = Nist_sp_800_53_control(control)
+        #     key = control_object.number
+        #     self.controls[key] = control_object
     
     def __str__(self) -> str:
         control_enhancement_count = 0
@@ -606,8 +609,6 @@ class Nist_sp800_53(Library):
         control_master_ref = control_ref.split('(')[0]
         return self.controls[control_master_ref].control_enhancements[control_ref]
         
-  
-
     def list_controls_from_family(self, family: str) -> list:
         """Gets a lists of the control IDs for a family name.
 
@@ -622,7 +623,6 @@ class Nist_sp800_53(Library):
             if control.family == family:
                 output_list.append(key)
         return output_list
-
 
     def export_html_docset(self, output_path: str, stylesheet_path: str = "") -> None:
         """Creates an html document set for the library.
@@ -678,6 +678,22 @@ class Nist_sp800_53(Library):
         with open(file_name, 'wb') as f:
             pickle.dump(self, f) 
     
+    def export_as_json(self, path: str) -> None:
+        """Exports the control set as a json saved to the path location. Can be used to create new Nist_SP800_53 object
+
+        Args:
+            path (str): path to save json
+        """
+
+        copy = self.__dict__
+        for key, control in copy['controls'].items():
+            copy['controls'][key] = control.__dict__
+            for enh_key, enhancement in copy['controls'][key]['control_enhancements'].items():
+                copy['controls'][key]['control_enhancements'][enh_key] = enhancement.__dict__
+        
+        with open('test_json.json', 'w') as json_file:
+            json.dump(copy, json_file, indent=2)
+
     @classmethod
     def load(cls, filename):
         """Load an instance of the class from a pickle file."""
